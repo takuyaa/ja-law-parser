@@ -9,7 +9,7 @@ repository = "https://github.com/takuyaa/ja-law-parser"
 packages = [{ include = "ja_law_parser" }]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.9"
 pydantic-xml = { extras = ["lxml"], version = "^2.3.0" }
 pydantic = "^2.4.2"
 
