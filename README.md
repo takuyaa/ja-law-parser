@@ -16,8 +16,6 @@ pip install ja-law-parser
 ## Usage
 
 ```python
-from typing import Optional
-
 from ja_law_parser.model import Article, Chapter, Law, Paragraph
 from ja_law_parser.parser import LawParser
 
@@ -27,15 +25,15 @@ law: Law = parser.parse(path="321CONSTITUTION_19470503_000000000000000.xml")
 print(law.law_body.law_title.text)
 # => 日本国憲法
 
-chapter3: Optional[Chapter] = law.law_body.main_provision.chapters[2]
+chapter3: Chapter = law.law_body.main_provision.chapters[2]
 print(chapter3.chapter_title.text)
 # => 三章　国民の権利及び義務
 
-article11: Optional[Article] = chapter3.articles[1]
+article11: Article = chapter3.articles[1]
 print(article11.article_title.text)
 # => 第十一条
 
-paragraph11: Optional[Paragraph] = article11.paragraphs[0]
+paragraph11: Paragraph = article11.paragraphs[0]
 print(paragraph11.paragraph_sentence.sentences[0].text)
 # => 国民は、すべての基本的人権の享有を妨げられない。
 print(paragraph11.paragraph_sentence.sentences[1].text)
