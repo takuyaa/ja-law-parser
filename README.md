@@ -10,7 +10,7 @@
 ## Installation
 
 ```shell
-pip install ja-law-parser
+pip install git+https://github.com/takuyaa/ja-law-parser.git
 ```
 
 ## Usage
