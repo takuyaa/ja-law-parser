@@ -1,7 +1,7 @@
 import inspect
 import sys
 from functools import cached_property
-from typing import Literal, Optional, TypeAlias
+from typing import Literal, Optional, Union
 
 from lxml import etree
 from pydantic import Field, NonNegativeInt, PositiveInt, computed_field
@@ -86,7 +86,7 @@ class ArithFormula(BaseXmlModel, tag="ArithFormula"):
         return ""
 
 
-QuoteStructT: TypeAlias = "Sentence | Fig | TableStruct | Text"
+QuoteStructT = Union["Sentence", Fig, "TableStruct", Text]
 
 
 class QuoteStruct(BaseXmlModel, arbitrary_types_allowed=True):
@@ -134,7 +134,7 @@ class QuoteStruct(BaseXmlModel, arbitrary_types_allowed=True):
     raw_element: etree._Element = Field(exclude=True)
 
 
-LineContentT: TypeAlias = Text | QuoteStruct | ArithFormula | Ruby | Sup | Sub
+LineContentT = Union[Text, QuoteStruct, ArithFormula, Ruby, Sup, Sub]
 
 
 class Line(BaseXmlModel, tag="Line", arbitrary_types_allowed=True):
@@ -218,9 +218,9 @@ class TaggedText(BaseXmlModel, arbitrary_types_allowed=True):
 
     @computed_field  # type: ignore[misc]
     @cached_property
-    def tagged_text(self) -> list[Text | Line | Ruby | Sup | Sub]:
+    def tagged_text(self) -> list[Union[Text, Line, Ruby, Sup, Sub]]:
         element = self.raw_element
-        tags: list[Text | Line | Ruby | Sup | Sub] = []
+        tags: list[Union[Text, Line, Ruby, Sup, Sub]] = []
 
         # Head text
         if element.text is not None:
@@ -388,9 +388,9 @@ class Sentence(WithWritingMode, tag="Sentence"):
 
     @computed_field  # type: ignore[misc]
     @cached_property
-    def contents(self) -> list[Text | Line | QuoteStruct | ArithFormula | Ruby | Sup | Sub]:
+    def contents(self) -> list[Union[Text, Line, QuoteStruct, ArithFormula, Ruby, Sup, Sub]]:
         element = self.raw_element
-        contents: list[Text | Line | QuoteStruct | ArithFormula | Ruby | Sup | Sub] = []
+        contents: list[Union[Text, Line, QuoteStruct, ArithFormula, Ruby, Sup, Sub]] = []
 
         # Head text
         if element.text is not None:
@@ -3330,7 +3330,7 @@ class Law(BaseXmlModel, tag="Law"):
 
 
 def get_attr(element: etree._Element, tag: str) -> Optional[str]:
-    attr: Optional[str | bytes] = element.attrib.get(tag)
+    attr: Optional[Union[str, bytes]] = element.attrib.get(tag)
     if attr is None:
         return None
     elif isinstance(attr, bytes):
