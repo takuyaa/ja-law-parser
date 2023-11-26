@@ -2,6 +2,7 @@
 name = "ja-law-parser"
 version = "0.1.0"
 description = "A Japanese law parser"
+license = "MIT"
 authors = ["Takuya Asano <takuya.a@gmail.com>"]
 readme = "README.md"
 packages = [{ include = "ja_law_parser" }]
