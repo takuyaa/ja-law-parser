@@ -5,6 +5,7 @@ description = "A Japanese law parser"
 license = "MIT"
 authors = ["Takuya Asano <takuya.a@gmail.com>"]
 readme = "README.md"
+repository = "https://github.com/takuyaa/ja-law-parser"
 packages = [{ include = "ja_law_parser" }]
 
 [tool.poetry.dependencies]
