@@ -1,0 +1,19 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+sdist/
+
+# Unit test / coverage reports
+.pytest_cache/
+
+# Tools
+.mypy_cache/
+.ruff_cache/
+
+# Data directory
+data/

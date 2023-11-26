@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Law Era="Reiwa" Year="01" Num="001" LawType="Act" Lang="ja" PromulgateMonth="01" PromulgateDay="31">
+  <LawNum>令和一年テスト一号</LawNum>
+  <LawBody>
+    <LawTitle Kana="たいとるのてすとでーた" Abbrev="">タイトルの<Ruby>テ<Rt>て</Rt></Ruby><Ruby>ス<Rt>す</Rt></Ruby><Ruby>ト<Rt>と</Rt></Ruby>データ</LawTitle>
+    <MainProvision>
+      <Article Num="1">
+        <ArticleCaption>（目的）</ArticleCaption>
+        <ArticleTitle>第一条</ArticleTitle>
+        <Paragraph Num="1">
+          <ParagraphNum />
+          <ParagraphSentence>
+            <Sentence>このテストデータはパーサーをテストすることを目的とする。</Sentence>
+          </ParagraphSentence>
+        </Paragraph>
+      </Article>
+      <Article Num="2">
+        <ArticleCaption>（定義）</ArticleCaption>
+        <ArticleTitle>第二条</ArticleTitle>
+        <Paragraph Num="1">
+          <ParagraphNum />
+          <ParagraphSentence>
+            <Sentence>このテストデータにおいて「パーサー」とは、日本の法令XMLデータをパースするものをいう。</Sentence>
+          </ParagraphSentence>
+        </Paragraph>
+        <Paragraph Num="2">
+          <ParagraphNum>２</ParagraphNum>
+          <ParagraphSentence>
+            <Sentence>このテストデータにおいて「法令」とは、憲法、法律、政令、勅令、府省令、及び規則をいう。</Sentence>
+          </ParagraphSentence>
+        </Paragraph>
+      </Article>
+      <Article Num="3">
+        <ArticleCaption>（基本理念）</ArticleCaption>
+        <ArticleTitle>第三条</ArticleTitle>
+        <Paragraph Num="1">
+          <ParagraphNum />
+          <ParagraphSentence>
+            <Sentence>テストはパーサーの動作を保証することを旨として行われなければならない。</Sentence>
+          </ParagraphSentence>
+        </Paragraph>
+      </Article>
+    </MainProvision>
+    <SupplProvision Extract="true">
+      <SupplProvisionLabel>附　則</SupplProvisionLabel>
+      <Article Num="1">
+        <ArticleCaption>（施行期日）</ArticleCaption>
+        <ArticleTitle>第一条</ArticleTitle>
+        <Paragraph Num="1">
+          <ParagraphNum />
+          <ParagraphSentence>
+            <Sentence>このテストは、公布の日から施行する。</Sentence>
+          </ParagraphSentence>
+        </Paragraph>
+      </Article>
+      <Article Num="2">
+        <ArticleCaption>（検討）</ArticleCaption>
+        <ArticleTitle>第二条</ArticleTitle>
+        <Paragraph Num="1">
+          <ParagraphNum />
+          <ParagraphSentence>
+            <Sentence>このテストデータについては、このテストの結果等を勘案し、必要があると認めるときは、その結果に基づいて必要な修正を講ずるものとする。</Sentence>
+          </ParagraphSentence>
+        </Paragraph>
+      </Article>
+    </SupplProvision>
+  </LawBody>
+</Law>

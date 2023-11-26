@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Law Era="Heisei" Lang="ja" LawType="Act" Num="1" Year="23" PromulgateMonth="01"
+  PromulgateDay="01">
+  <LawNum>平成二十三年法律第一号</LawNum>
+  <LawBody>
+    <LawTitle Kana="てすとたいとる" Abbrev="テスト" AbbrevKana="て">テストタイトル</LawTitle>
+    <TOC>
+      <TOCLabel>目次</TOCLabel>
+      <TOCChapter Num="1">
+        <ChapterTitle>第一章 総則</ChapterTitle>
+        <ArticleRange>（第一条）</ArticleRange>
+      </TOCChapter>
+      <TOCChapter Num="2">
+        <ChapterTitle>第二章 テスト</ChapterTitle>
+        <ArticleRange>（第二条）</ArticleRange>
+      </TOCChapter>
+      <TOCSupplProvision>
+        <SupplProvisionLabel>附則</SupplProvisionLabel>
+      </TOCSupplProvision>
+    </TOC>
+    <MainProvision>
+      <Chapter Num="1">
+        <ChapterTitle>第一章 総則</ChapterTitle>
+        <Article Num="1">
+          <ArticleCaption>（第一条テスト）</ArticleCaption>
+          <ArticleTitle>第一条</ArticleTitle>
+          <Paragraph Num="1">
+            <ParagraphNum />
+            <ParagraphSentence>
+              <Sentence Num="1">第一条の内容。</Sentence>
+            </ParagraphSentence>
+          </Paragraph>
+        </Article>
+      </Chapter>
+      <Chapter Num="2">
+        <ChapterTitle>第二章 テスト</ChapterTitle>
+        <Article Num="2">
+          <ArticleCaption>（第二条テスト）</ArticleCaption>
+          <ArticleTitle>第二条</ArticleTitle>
+          <Paragraph Num="1">
+            <ParagraphNum />
+            <ParagraphSentence>
+              <Sentence Num="1">第二条の内容。</Sentence>
+            </ParagraphSentence>
+          </Paragraph>
+        </Article>
+      </Chapter>
+    </MainProvision>
+    <SupplProvision Extract="true">
+      <SupplProvisionLabel>附 則</SupplProvisionLabel>
+      <Article Num="1">
+        <ArticleCaption>（附則テスト）</ArticleCaption>
+        <ArticleTitle>第一条</ArticleTitle>
+        <Paragraph Num="1">
+          <ParagraphNum />
+          <ParagraphSentence>
+            <Sentence Function="main" Num="1">附則の内容。</Sentence>
+            <Sentence Function="proviso" Num="2">但書の内容。</Sentence>
+          </ParagraphSentence>
+        </Paragraph>
+      </Article>
+    </SupplProvision>
+  </LawBody>
+</Law>
