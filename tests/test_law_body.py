@@ -40,7 +40,6 @@ class TestLawBody:
         law_body: LawBody = LawBody.from_xml(xml)
         assert list(law_body.texts()) == ["タイトル", "（条見出し）", "条名", "条文"]
 
-
     def test_law_title(self) -> None:
         xml = """\
         <LawBody>

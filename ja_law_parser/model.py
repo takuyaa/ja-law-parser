@@ -3274,6 +3274,7 @@ class LawBody(
             yield text
         # TODO Other fields
 
+
 class Remarks(WithRemarksLabel, WithSentences, tag="Remarks"):
     """
     備考
@@ -3430,6 +3431,10 @@ class Law(BaseXmlModel, tag="Law"):
 
     law_num: str = element(tag="LawNum")
     law_body: LawBody
+
+    def texts(self) -> Generator[str, None, None]:
+        for text in self.law_body.texts():
+            yield text
 
 
 def get_attr(element: etree._Element, tag: str) -> Optional[str]:
