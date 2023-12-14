@@ -2092,6 +2092,16 @@ class Subitem1Sentence(WithSentences, tag="Subitem1Sentence", search_mode="unord
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        if self.sentences is not None:
+            for sentence in self.sentences:
+                yield sentence.text
+        if self.columns is not None:
+            for column in self.columns:
+                for text in column.texts():
+                    yield text
+        # TODO self.table
+
 
 class Subitem2Sentence(WithSentences, tag="Subitem2Sentence", search_mode="unordered"):
     """
@@ -2516,6 +2526,21 @@ class Subitem1(WithSubitem1Title, tag="Subitem1", search_mode="unordered"):
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        if self.subitem1_title is not None:
+            yield self.subitem1_title.text
+        for text in self.subitem1_sentence.texts():
+            yield text
+        # TODO self.subitems2
+        # if self.subitems2 is not None:
+        #     for subitem2 in self.subitems2:
+        #         for text in subitem2.texts():
+        #             yield text
+        # TODO self.table_structs
+        # TODO self.fig_structs
+        # TODO self.style_structs
+        # TODO self.lists
+
 
 class Item(WithItemTitle, tag="Item", search_mode="unordered"):
     """
@@ -2547,8 +2572,14 @@ class Item(WithItemTitle, tag="Item", search_mode="unordered"):
     lists: Optional[list[List]] = None
 
     def texts(self) -> Generator[str, None, None]:
+        if self.item_title is not None:
+            yield self.item_title.text
         for text in self.item_sentence.texts():
             yield text
+        if self.subitems is not None:
+            for subitem in self.subitems:
+                for text in subitem.texts():
+                    yield text
         # TODO Other fields https://www.tashiro-ip.com/ip-law/xml-schema.html#e-Item
 
 

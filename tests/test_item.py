@@ -13,7 +13,10 @@ class TestItem:
         """
         item: Item = Item.from_xml(xml)
         assert item is not None
+        assert list(item.texts()) == ["Item title", "Item sentence"]
+
         assert item.item_title.text == "Item title"
+
         assert len(item.item_sentence.sentences) == 1
         sentence: Sentence = item.item_sentence.sentences[0]
         assert sentence.text == "Item sentence"
@@ -47,16 +50,19 @@ class TestItem:
         assert item.item_title.text == "Item 1"
         assert len(item.item_sentence.columns) == 1
         assert len(item.subitems) == 2
+        assert list(item.texts()) == ["Item 1", "Sentence 1", "Subitem 1", "Sentence 2", "Subitem 2", "Sentence 3"]
 
         # Subitem1
         subitem1_1: Subitem1 = item.subitems[0]
         assert subitem1_1.subitem1_title.text == "Subitem 1"
         assert len(subitem1_1.subitem1_sentence.sentences) == 1
         assert subitem1_1.subitem1_sentence.sentences[0].text == "Sentence 2"
+        assert list(subitem1_1.texts()) == ["Subitem 1", "Sentence 2"]
         subitem1_2: Subitem1 = item.subitems[1]
         assert subitem1_2.subitem1_title.text == "Subitem 2"
         assert len(subitem1_2.subitem1_sentence.sentences) == 1
         assert subitem1_2.subitem1_sentence.sentences[0].text == "Sentence 3"
+        assert list(subitem1_2.texts()) == ["Subitem 2", "Sentence 3"]
 
     def test_item_with_table_struct(self) -> None:
         xml = """\
@@ -85,6 +91,7 @@ class TestItem:
         assert item.item_title.text == "Item 1"
         assert len(item.item_sentence.sentences) == 1
         assert len(item.table_structs) == 1
+        # TODO assert list(item.texts()) ==
 
         # TableStruct
         table_struct: TableStruct = item.table_structs[0]
@@ -93,3 +100,4 @@ class TestItem:
         assert len(table_row.table_columns) == 2
         assert len(table_row.table_columns[0].sentences) == 1
         assert len(table_row.table_columns[1].sentences) == 1
+        # TODO assert list(table_struct.texts()) ==
