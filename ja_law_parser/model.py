@@ -3009,6 +3009,20 @@ class MainProvision(BaseXmlModel, tag="MainProvision", search_mode="unordered"):
     articles: Optional[list[Article]] = None
     paragraphs: Optional[list[Paragraph]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        # TODO
+        # if self.parts is not None:
+        #     for part in self.parts:
+        #         for text in part.texts():
+        #             yield text
+        # TODO self.chapters
+        # TODO self.sections
+        if self.articles is not None:
+            for article in self.articles:
+                for text in article.texts():
+                    yield text
+        # TODO self.paragraphs
+
 
 class SupplProvisionAppdxTable(
     WithSupplProvisionAppdxTableTitle, WithRelatedArticleNum, tag="SupplProvisionAppdxTable"
@@ -3250,6 +3264,15 @@ class LawBody(
     appdx_figs: Optional[list[AppdxFig]] = None
     appdx_formats: Optional[list[AppdxFormat]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        if self.law_title is not None:
+            yield self.law_title.text
+        if self.enact_statement is not None:
+            yield self.enact_statement.text
+        # TODO self.preamble
+        for text in self.main_provision.texts():
+            yield text
+        # TODO Other fields
 
 class Remarks(WithRemarksLabel, WithSentences, tag="Remarks"):
     """
