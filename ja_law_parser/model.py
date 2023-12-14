@@ -1,7 +1,7 @@
 import inspect
 import sys
 from functools import cached_property
-from typing import Literal, Optional, Union
+from typing import Generator, Literal, Optional, Union
 
 from lxml import etree
 from pydantic import Field, NonNegativeInt, PositiveInt, computed_field
@@ -1750,6 +1750,11 @@ class Column(WithSentences, tag="Column"):
     line_break: Optional[bool] = attr(Name="LineBreak", default=None)
     align: Optional[Literal["left", "center", "right", "justify"]] = attr(Name="Align", default=None)
 
+    def texts(self) -> Generator[str, None, None]:
+        if self.sentences is not None:
+            for sentence in self.sentences:
+                yield sentence.text
+
 
 class TableColumn(WithSentences, tag="TableColumn", search_mode="unordered"):
     """
@@ -1870,6 +1875,16 @@ class ItemSentence(WithSentences, tag="ItemSentence", search_mode="unordered"):
 
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        if self.sentences is not None:
+            for sentence in self.sentences:
+                yield sentence.text
+        if self.columns is not None:
+            for column in self.columns:
+                for text in column.texts():
+                    yield text
+        # TODO Other fields https://www.tashiro-ip.com/ip-law/xml-schema.html#e-ItemSentence
 
 
 class ClassSentence(WithSentences, tag="ClassSentence", search_mode="unordered"):
@@ -2531,6 +2546,11 @@ class Item(WithItemTitle, tag="Item", search_mode="unordered"):
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        for text in self.item_sentence.texts():
+            yield text
+        # TODO Other fields https://www.tashiro-ip.com/ip-law/xml-schema.html#e-Item
+
 
 class Class(WithClassTitle, tag="Class", search_mode="unordered"):
     """
@@ -2580,6 +2600,11 @@ class ParagraphSentence(WithSentences, tag="ParagraphSentence"):
         sentences: 段
     """
 
+    def texts(self) -> Generator[str, None, None]:
+        if self.sentences is not None:
+            for sentence in self.sentences:
+                yield sentence.text
+
 
 class Paragraph(WithParagraphCaption, WithParagraphNum, tag="Paragraph", search_mode="unordered"):
     """
@@ -2615,6 +2640,15 @@ class Paragraph(WithParagraphCaption, WithParagraphNum, tag="Paragraph", search_
     style_structs: Optional[list[StyleStruct]] = None
     items: Optional[list[Item]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        for text in self.paragraph_sentence.texts():
+            yield text
+        if self.items is not None:
+            for item in self.items:
+                for text in item.texts():
+                    yield text
+        # TODO Other fields https://www.tashiro-ip.com/ip-law/xml-schema.html#e-Paragraph
+
 
 class Article(
     WithArticleCaption,
@@ -2642,6 +2676,21 @@ class Article(
     hide: Optional[bool] = attr(name="Hide", default=None)
 
     paragraphs: list[Paragraph]
+
+    def texts(self) -> Generator[str, None, None]:
+        if self.article_caption is not None:
+            yield self.article_caption.text
+
+        article_title: ArticleTitle = self.article_title
+        yield article_title.text
+
+        if self.paragraphs is not None:
+            for paragraph in self.paragraphs:
+                for text in paragraph.texts():
+                    yield text
+
+        if self.suppl_note is not None:
+            yield self.suppl_note.text
 
 
 class Division(WithDivisionTitle, tag="Division"):

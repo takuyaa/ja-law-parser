@@ -22,3 +22,16 @@ class TestArticle:
         e1: Line = tagged_text[1]
         assert type(e1) == Line
         assert e1.contents
+
+
+    def test_article_texts(self) -> None:
+        xml = """
+        <Article Num="132">
+          <ArticleCaption>テスト<Line><ArithFormula><Fig src="./pict/2JH00000021313.jpg"/></ArithFormula></Line>の見出し</ArticleCaption>
+          <ArticleTitle>テストの条名</ArticleTitle>
+          <Paragraph Num="1"><ParagraphNum/><ParagraphSentence><Sentence Num="1" WritingMode="vertical">テストの項文</Sentence></ParagraphSentence></Paragraph>
+        </Article>
+        """  # noqa: E501
+
+        article: Article = Article.from_xml(xml)
+        assert list(article.texts()) == ["テストの見出し", "テストの条名", "テストの項文"]
