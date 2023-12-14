@@ -111,8 +111,18 @@ class QuoteStruct(BaseXmlModel, arbitrary_types_allowed=True):
         for elm in element.iterchildren():
             if elm.tag == "Sentence":
                 contents.append(Sentence(raw_element=elm))
+            elif elm.tag == "List":
+                contents.append(List.from_xml_tree(root=elm))  # type: ignore[arg-type]
             elif elm.tag == "Fig":
                 contents.append(Fig.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "FigStruct":
+                contents.append(FigStruct.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "Table":
+                contents.append(Table.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "TableStruct":
+                contents.append(TableStruct.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "ArithFormula":
+                contents.append(ArithFormula.from_xml_tree(root=elm))  # type: ignore[arg-type]
             else:
                 raise NotImplementedError(f"{elm.tag} is not implemented yet")
 
