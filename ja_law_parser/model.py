@@ -2753,6 +2753,14 @@ class Division(WithDivisionTitle, tag="Division"):
 
     articles: Optional[list[Article]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        if self.division_title is not None:
+            yield self.division_title.text
+        if self.articles is not None:
+            for article in self.articles:
+                for text in article.texts():
+                    yield text
+
 
 class Subsection(WithSubsectionTitle, tag="Subsection", search_mode="unordered"):
     """
@@ -2774,6 +2782,18 @@ class Subsection(WithSubsectionTitle, tag="Subsection", search_mode="unordered")
 
     articles: Optional[list[Article]] = None
     divisions: Optional[list[Division]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        if self.subsection_title is not None:
+            yield self.subsection_title.text
+        if self.articles is not None:
+            for article in self.articles:
+                for text in article.texts():
+                    yield text
+        if self.divisions is not None:
+            for division in self.divisions:
+                for text in division.texts():
+                    yield text
 
 
 class Section(WithSectionTitle, tag="Section", search_mode="unordered"):
@@ -2799,6 +2819,22 @@ class Section(WithSectionTitle, tag="Section", search_mode="unordered"):
     subsections: Optional[list[Subsection]] = None
     divisions: Optional[list[Division]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        if self.section_title is not None:
+            yield self.section_title.text
+        if self.articles is not None:
+            for article in self.articles:
+                for text in article.texts():
+                    yield text
+        if self.subsections is not None:
+            for subsection in self.subsections:
+                for text in subsection.texts():
+                    yield text
+        if self.divisions is not None:
+            for division in self.divisions:
+                for text in division.texts():
+                    yield text
+
 
 class Chapter(WithChapterTitle, tag="Chapter", search_mode="unordered"):
     """
@@ -2821,6 +2857,18 @@ class Chapter(WithChapterTitle, tag="Chapter", search_mode="unordered"):
     articles: Optional[list[Article]] = None
     sections: Optional[list[Section]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        if self.chapter_title is not None:
+            yield self.chapter_title.text
+        if self.articles is not None:
+            for article in self.articles:
+                for text in article.texts():
+                    yield text
+        if self.sections is not None:
+            for section in self.sections:
+                for text in section.texts():
+                    yield text
+
 
 class Part(WithPartTitle, tag="Part", search_mode="unordered"):
     """
@@ -2842,6 +2890,18 @@ class Part(WithPartTitle, tag="Part", search_mode="unordered"):
 
     articles: Optional[list[Article]] = None
     chapters: Optional[list[Chapter]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        if self.part_title is not None:
+            yield self.part_title.text
+        if self.articles is not None:
+            for article in self.articles:
+                for text in article.texts():
+                    yield text
+        if self.chapters is not None:
+            for chapter in self.chapters:
+                for text in chapter.texts():
+                    yield text
 
 
 class TOCDivision(WithDivisionTitle, WithArticleRange, tag="TOCDivision"):
@@ -3020,18 +3080,26 @@ class MainProvision(BaseXmlModel, tag="MainProvision", search_mode="unordered"):
     paragraphs: Optional[list[Paragraph]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        # TODO
-        # if self.parts is not None:
-        #     for part in self.parts:
-        #         for text in part.texts():
-        #             yield text
-        # TODO self.chapters
-        # TODO self.sections
+        if self.parts is not None:
+            for part in self.parts:
+                for text in part.texts():
+                    yield text
+        if self.chapters is not None:
+            for chapter in self.chapters:
+                for text in chapter.texts():
+                    yield text
+        if self.sections is not None:
+            for section in self.sections:
+                for text in section.texts():
+                    yield text
         if self.articles is not None:
             for article in self.articles:
                 for text in article.texts():
                     yield text
-        # TODO self.paragraphs
+        if self.paragraphs is not None:
+            for paragraph in self.paragraphs:
+                for text in paragraph.texts():
+                    yield text
 
 
 class SupplProvisionAppdxTable(
