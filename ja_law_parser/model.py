@@ -111,6 +111,10 @@ class QuoteStruct(BaseXmlModel, arbitrary_types_allowed=True):
         for elm in element.iterchildren():
             if elm.tag == "Sentence":
                 contents.append(Sentence(raw_element=elm))
+            elif elm.tag == "Item":
+                contents.append(Item.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "Paragraph":
+                contents.append(Paragraph.from_xml_tree(root=elm))  # type: ignore[arg-type]
             elif elm.tag == "List":
                 contents.append(List.from_xml_tree(root=elm))  # type: ignore[arg-type]
             elif elm.tag == "Fig":
@@ -121,6 +125,8 @@ class QuoteStruct(BaseXmlModel, arbitrary_types_allowed=True):
                 contents.append(Table.from_xml_tree(root=elm))  # type: ignore[arg-type]
             elif elm.tag == "TableStruct":
                 contents.append(TableStruct.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "AppdxTable":
+                contents.append(AppdxTable.from_xml_tree(root=elm))  # type: ignore[arg-type]
             elif elm.tag == "ArithFormula":
                 contents.append(ArithFormula.from_xml_tree(root=elm))  # type: ignore[arg-type]
             else:
