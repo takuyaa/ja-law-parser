@@ -64,6 +64,9 @@ class Fig(BaseXmlModel, tag="Fig"):
 
     src: str = attr(name="src")
 
+    def texts(self) -> Generator[str, None, None]:
+        yield self.src
+
 
 class ArithFormula(BaseXmlModel, tag="ArithFormula"):
     """
@@ -495,6 +498,9 @@ class Style(BaseXmlModel, tag="Style"):
     """
 
     figs: Optional[list[Fig]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.figs)
 
 
 class Format(BaseXmlModel, tag="Format"):
@@ -1961,6 +1967,11 @@ class FigStruct(WithFigStructTitle, tag="FigStruct"):
     fig: Fig
     post_remarks: Optional[list["Remarks"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.pre_remarks)
+        yield from texts_texts(self.fig)
+        yield from texts_opt_list_texts(self.post_remarks)
+
 
 class NoteStruct(WithNoteStructTitle, tag="NoteStruct"):
     """
@@ -1993,6 +2004,11 @@ class StyleStruct(WithStyleStructTitle, tag="StyleStruct"):
     style: Style
     post_remarks: Optional[list["Remarks"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.pre_remarks)
+        yield from texts_texts(self.style)
+        yield from texts_opt_list_texts(self.post_remarks)
+
 
 class FormatStruct(WithFormatStructTitle, tag="FormatStruct"):
     """
@@ -2020,6 +2036,10 @@ class ListSentence(WithSentences, tag="ListSentence"):
     """
 
     columns: Optional[list[Column]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
 
 
 class Sublist1Sentence(WithSentences, tag="Sublist1Sentence"):
@@ -2106,6 +2126,10 @@ class List(BaseXmlModel, tag="List"):
 
     list_sentence: ListSentence
     sublists1: Optional[list[Sublist1]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_texts(self.list_sentence)
+        # TODO yield from texts_opt_list_texts(self.sublists1)
 
 
 class Subitem1Sentence(WithSentences, tag="Subitem1Sentence", search_mode="unordered"):
@@ -2555,9 +2579,9 @@ class Subitem1(WithSubitem1Title, tag="Subitem1", search_mode="unordered"):
         yield from texts_texts(self.subitem1_sentence)
         # TODO yield from texts_opt_list_texts(self.subitems2)
         yield from texts_opt_list_texts(self.table_structs)
-        # TODO yield from texts_opt_list_texts(self.fig_structs)
-        # TODO yield from texts_opt_list_texts(self.style_structs)
-        # TODO yield from texts_opt_list_texts(self.lists)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
 
 
 class Item(WithItemTitle, tag="Item", search_mode="unordered"):
