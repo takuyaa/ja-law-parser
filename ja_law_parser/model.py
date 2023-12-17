@@ -1,7 +1,7 @@
 import inspect
 import sys
 from functools import cached_property
-from typing import Generator, Literal, Optional, Union
+from typing import Generator, Literal, Optional, Protocol, Sequence, Union
 
 from lxml import etree
 from pydantic import Field, NonNegativeInt, PositiveInt, computed_field
@@ -99,7 +99,7 @@ class QuoteStruct(BaseXmlModel, arbitrary_types_allowed=True):
 
     @computed_field  # type: ignore[misc]
     @cached_property
-    def contents(self) -> list[QuoteStructT]:
+    def contents(self) -> list[QuoteStructT]:  # noqa: C901
         element = self.raw_element
         contents: list[QuoteStructT] = []
 
@@ -1767,9 +1767,7 @@ class Column(WithSentences, tag="Column"):
     align: Optional[Literal["left", "center", "right", "justify"]] = attr(Name="Align", default=None)
 
     def texts(self) -> Generator[str, None, None]:
-        if self.sentences is not None:
-            for sentence in self.sentences:
-                yield sentence.text
+        yield from texts_opt_list_text(self.sentences)
 
 
 class TableColumn(WithSentences, tag="TableColumn", search_mode="unordered"):
@@ -1828,6 +1826,7 @@ class TableColumn(WithSentences, tag="TableColumn", search_mode="unordered"):
     paragraphs: Optional[list["Paragraph"]] = None
     items: Optional[list["Item"]] = None
     subitems1: Optional[list["Subitem1"]] = None
+    # TODO
     # subitems2: Optional[list[Subitem2]] = None
     # subitems3: Optional[list[Subitem3]] = None
     # subitems4: Optional[list[Subitem4]] = None
@@ -1843,9 +1842,7 @@ class TableColumn(WithSentences, tag="TableColumn", search_mode="unordered"):
 
     def texts(self) -> Generator[str, None, None]:
         # TODO Other fields
-        if self.sentences is not None:
-            for sentence in self.sentences:
-                yield sentence.text
+        yield from texts_opt_list_text(self.sentences)
 
 
 class TableRow(BaseXmlModel, tag="TableRow"):
@@ -1859,9 +1856,7 @@ class TableRow(BaseXmlModel, tag="TableRow"):
     table_columns: list[TableColumn]
 
     def texts(self) -> Generator[str, None, None]:
-        for column in self.table_columns:
-            for text in column.texts():
-                yield text
+        yield from texts_list_texts(self.table_columns)
 
 
 class TableHeaderRow(WithTableHeaderColumns, tag="TableHeaderRow"):
@@ -1873,9 +1868,7 @@ class TableHeaderRow(WithTableHeaderColumns, tag="TableHeaderRow"):
     """
 
     def texts(self) -> Generator[str, None, None]:
-        if self.table_header_columns is not None:
-            for column in self.table_header_columns:
-                yield column.text
+        yield from texts_opt_list_text(self.table_header_columns)
 
 
 class Table(BaseXmlModel, tag="Table"):
@@ -1895,13 +1888,8 @@ class Table(BaseXmlModel, tag="Table"):
     table_rows: list[TableRow]
 
     def texts(self) -> Generator[str, None, None]:
-        if self.table_header_rows is not None:
-            for row in self.table_header_rows:
-                for text in row.texts():
-                    yield text
-        for row in self.table_rows:
-            for text in row.texts():
-                yield text
+        yield from texts_opt_list_texts(self.table_header_rows)
+        yield from texts_list_texts(self.table_rows)
 
 
 class ItemSentence(WithSentences, tag="ItemSentence", search_mode="unordered"):
@@ -1918,14 +1906,9 @@ class ItemSentence(WithSentences, tag="ItemSentence", search_mode="unordered"):
     table: Optional[Table] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.sentences is not None:
-            for sentence in self.sentences:
-                yield sentence.text
-        if self.columns is not None:
-            for column in self.columns:
-                for text in column.texts():
-                    yield text
-        # TODO Other fields https://www.tashiro-ip.com/ip-law/xml-schema.html#e-ItemSentence
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
 
 
 class ClassSentence(WithSentences, tag="ClassSentence", search_mode="unordered"):
@@ -1958,16 +1941,9 @@ class TableStruct(WithTableStructTitle, tag="TableStruct"):
     post_remarks: Optional[list["Remarks"]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.pre_remarks is not None:
-            for remarks in self.pre_remarks:
-                for text in remarks.texts():
-                    yield text
-        for text in self.table.texts():
-            yield text
-        if self.post_remarks is not None:
-            for remarks in self.post_remarks:
-                for text in remarks.texts():
-                    yield text
+        yield from texts_opt_list_texts(self.pre_remarks)
+        yield from texts_texts(self.table)
+        yield from texts_opt_list_texts(self.post_remarks)
 
 
 class FigStruct(WithFigStructTitle, tag="FigStruct"):
@@ -2146,14 +2122,9 @@ class Subitem1Sentence(WithSentences, tag="Subitem1Sentence", search_mode="unord
     table: Optional[Table] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.sentences is not None:
-            for sentence in self.sentences:
-                yield sentence.text
-        if self.columns is not None:
-            for column in self.columns:
-                for text in column.texts():
-                    yield text
-        # TODO self.table
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
 
 
 class Subitem2Sentence(WithSentences, tag="Subitem2Sentence", search_mode="unordered"):
@@ -2580,19 +2551,13 @@ class Subitem1(WithSubitem1Title, tag="Subitem1", search_mode="unordered"):
     lists: Optional[list[List]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.subitem1_title is not None:
-            yield self.subitem1_title.text
-        for text in self.subitem1_sentence.texts():
-            yield text
-        # TODO self.subitems2
-        # if self.subitems2 is not None:
-        #     for subitem2 in self.subitems2:
-        #         for text in subitem2.texts():
-        #             yield text
-        # TODO self.table_structs
-        # TODO self.fig_structs
-        # TODO self.style_structs
-        # TODO self.lists
+        yield from texts_opt_text(self.subitem1_title)
+        yield from texts_texts(self.subitem1_sentence)
+        # TODO yield from texts_opt_list_texts(self.subitems2)
+        yield from texts_opt_list_texts(self.table_structs)
+        # TODO yield from texts_opt_list_texts(self.fig_structs)
+        # TODO yield from texts_opt_list_texts(self.style_structs)
+        # TODO yield from texts_opt_list_texts(self.lists)
 
 
 class Item(WithItemTitle, tag="Item", search_mode="unordered"):
@@ -2625,18 +2590,10 @@ class Item(WithItemTitle, tag="Item", search_mode="unordered"):
     lists: Optional[list[List]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.item_title is not None:
-            yield self.item_title.text
-        for text in self.item_sentence.texts():
-            yield text
-        if self.subitems is not None:
-            for subitem in self.subitems:
-                for text in subitem.texts():
-                    yield text
-        if self.table_structs is not None:
-            for struct in self.table_structs:
-                for text in struct.texts():
-                    yield text
+        yield from texts_opt_text(self.item_title)
+        yield from texts_texts(self.item_sentence)
+        yield from texts_opt_list_texts(self.subitems)
+        yield from texts_opt_list_texts(self.table_structs)
         # TODO Other fields https://www.tashiro-ip.com/ip-law/xml-schema.html#e-Item
 
 
@@ -2689,9 +2646,7 @@ class ParagraphSentence(WithSentences, tag="ParagraphSentence"):
     """
 
     def texts(self) -> Generator[str, None, None]:
-        if self.sentences is not None:
-            for sentence in self.sentences:
-                yield sentence.text
+        yield from texts_opt_list_text(self.sentences)
 
 
 class Paragraph(WithParagraphCaption, WithParagraphNum, tag="Paragraph", search_mode="unordered"):
@@ -2729,12 +2684,8 @@ class Paragraph(WithParagraphCaption, WithParagraphNum, tag="Paragraph", search_
     items: Optional[list[Item]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        for text in self.paragraph_sentence.texts():
-            yield text
-        if self.items is not None:
-            for item in self.items:
-                for text in item.texts():
-                    yield text
+        yield from texts_texts(self.paragraph_sentence)
+        yield from texts_opt_list_texts(self.items)
         # TODO Other fields https://www.tashiro-ip.com/ip-law/xml-schema.html#e-Paragraph
 
 
@@ -2766,19 +2717,13 @@ class Article(
     paragraphs: list[Paragraph]
 
     def texts(self) -> Generator[str, None, None]:
-        if self.article_caption is not None:
-            yield self.article_caption.text
+        yield from texts_opt_text(self.article_caption)
 
         article_title: ArticleTitle = self.article_title
         yield article_title.text
 
-        if self.paragraphs is not None:
-            for paragraph in self.paragraphs:
-                for text in paragraph.texts():
-                    yield text
-
-        if self.suppl_note is not None:
-            yield self.suppl_note.text
+        yield from texts_list_texts(self.paragraphs)
+        yield from texts_opt_text(self.suppl_note)
 
 
 class Division(WithDivisionTitle, tag="Division"):
@@ -2801,12 +2746,8 @@ class Division(WithDivisionTitle, tag="Division"):
     articles: Optional[list[Article]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.division_title is not None:
-            yield self.division_title.text
-        if self.articles is not None:
-            for article in self.articles:
-                for text in article.texts():
-                    yield text
+        yield from texts_opt_text(self.division_title)
+        yield from texts_opt_list_texts(self.articles)
 
 
 class Subsection(WithSubsectionTitle, tag="Subsection", search_mode="unordered"):
@@ -2831,16 +2772,9 @@ class Subsection(WithSubsectionTitle, tag="Subsection", search_mode="unordered")
     divisions: Optional[list[Division]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.subsection_title is not None:
-            yield self.subsection_title.text
-        if self.articles is not None:
-            for article in self.articles:
-                for text in article.texts():
-                    yield text
-        if self.divisions is not None:
-            for division in self.divisions:
-                for text in division.texts():
-                    yield text
+        yield from texts_opt_text(self.subsection_title)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.divisions)
 
 
 class Section(WithSectionTitle, tag="Section", search_mode="unordered"):
@@ -2867,20 +2801,10 @@ class Section(WithSectionTitle, tag="Section", search_mode="unordered"):
     divisions: Optional[list[Division]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.section_title is not None:
-            yield self.section_title.text
-        if self.articles is not None:
-            for article in self.articles:
-                for text in article.texts():
-                    yield text
-        if self.subsections is not None:
-            for subsection in self.subsections:
-                for text in subsection.texts():
-                    yield text
-        if self.divisions is not None:
-            for division in self.divisions:
-                for text in division.texts():
-                    yield text
+        yield from texts_opt_text(self.section_title)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.subsections)
+        yield from texts_opt_list_texts(self.divisions)
 
 
 class Chapter(WithChapterTitle, tag="Chapter", search_mode="unordered"):
@@ -2905,16 +2829,9 @@ class Chapter(WithChapterTitle, tag="Chapter", search_mode="unordered"):
     sections: Optional[list[Section]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.chapter_title is not None:
-            yield self.chapter_title.text
-        if self.articles is not None:
-            for article in self.articles:
-                for text in article.texts():
-                    yield text
-        if self.sections is not None:
-            for section in self.sections:
-                for text in section.texts():
-                    yield text
+        yield from texts_opt_text(self.chapter_title)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.sections)
 
 
 class Part(WithPartTitle, tag="Part", search_mode="unordered"):
@@ -2939,16 +2856,9 @@ class Part(WithPartTitle, tag="Part", search_mode="unordered"):
     chapters: Optional[list[Chapter]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.part_title is not None:
-            yield self.part_title.text
-        if self.articles is not None:
-            for article in self.articles:
-                for text in article.texts():
-                    yield text
-        if self.chapters is not None:
-            for chapter in self.chapters:
-                for text in chapter.texts():
-                    yield text
+        yield from texts_opt_text(self.part_title)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.chapters)
 
 
 class TOCDivision(WithDivisionTitle, WithArticleRange, tag="TOCDivision"):
@@ -3127,26 +3037,11 @@ class MainProvision(BaseXmlModel, tag="MainProvision", search_mode="unordered"):
     paragraphs: Optional[list[Paragraph]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.parts is not None:
-            for part in self.parts:
-                for text in part.texts():
-                    yield text
-        if self.chapters is not None:
-            for chapter in self.chapters:
-                for text in chapter.texts():
-                    yield text
-        if self.sections is not None:
-            for section in self.sections:
-                for text in section.texts():
-                    yield text
-        if self.articles is not None:
-            for article in self.articles:
-                for text in article.texts():
-                    yield text
-        if self.paragraphs is not None:
-            for paragraph in self.paragraphs:
-                for text in paragraph.texts():
-                    yield text
+        yield from texts_opt_list_texts(self.parts)
+        yield from texts_opt_list_texts(self.chapters)
+        yield from texts_opt_list_texts(self.sections)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.paragraphs)
 
 
 class SupplProvisionAppdxTable(
@@ -3390,13 +3285,10 @@ class LawBody(
     appdx_formats: Optional[list[AppdxFormat]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.law_title is not None:
-            yield self.law_title.text
-        if self.enact_statement is not None:
-            yield self.enact_statement.text
+        yield from texts_opt_text(self.law_title)
+        yield from texts_opt_text(self.enact_statement)
         # TODO self.preamble
-        for text in self.main_provision.texts():
-            yield text
+        yield from texts_texts(self.main_provision)
         # TODO Other fields
 
 
@@ -3413,15 +3305,9 @@ class Remarks(WithRemarksLabel, WithSentences, tag="Remarks"):
     items: Optional[list[Item]] = None
 
     def texts(self) -> Generator[str, None, None]:
-        if self.remarks_label is not None:
-            yield self.remarks_label
-        if self.items is not None:
-            for item in self.items:
-                for text in item.texts():
-                    yield text
-        if self.sentences is not None:
-            for sentence in self.sentences:
-                yield sentence.text
+        yield from texts_opt_text(self.remarks_label)
+        yield from texts_opt_list_texts(self.items)
+        yield from texts_opt_list_text(self.sentences)
 
 
 class NewProvision(
@@ -3569,8 +3455,7 @@ class Law(BaseXmlModel, tag="Law"):
     law_body: LawBody
 
     def texts(self) -> Generator[str, None, None]:
-        for text in self.law_body.texts():
-            yield text
+        yield from texts_texts(self.law_body)
 
 
 def get_attr(element: etree._Element, tag: str) -> Optional[str]:
@@ -3580,6 +3465,52 @@ def get_attr(element: etree._Element, tag: str) -> Optional[str]:
     elif isinstance(attr, bytes):
         attr = attr.decode()
     return attr
+
+
+class TextP(Protocol):
+    @property
+    def text(self) -> str:
+        ...
+
+
+class TextsP(Protocol):
+    def texts(self) -> Generator[str, None, None]:
+        ...
+
+
+def texts_texts(obj: TextsP) -> Generator[str, None, None]:
+    for text in obj.texts():
+        yield text
+
+
+def texts_list_texts(obj: Sequence[TextsP]) -> Generator[str, None, None]:
+    for elem in obj:
+        for text in elem.texts():
+            yield text
+
+
+def texts_opt_text(obj: Optional[TextP]) -> Generator[str, None, None]:
+    if obj is not None:
+        yield obj.text
+
+
+def texts_opt_texts(obj: Optional[TextsP]) -> Generator[str, None, None]:
+    if obj is not None:
+        for text in obj.texts():
+            yield text
+
+
+def texts_opt_list_text(obj: Optional[Sequence[TextP]]) -> Generator[str, None, None]:
+    if obj is not None:
+        for elem in obj:
+            yield elem.text
+
+
+def texts_opt_list_texts(obj: Optional[Sequence[TextsP]]) -> Generator[str, None, None]:
+    if obj is not None:
+        for elem in obj:
+            for text in elem.texts():
+                yield text
 
 
 # For avoiding "model is partially initialized" error.
