@@ -91,7 +91,7 @@ class TestItem:
         assert item.item_title.text == "Item 1"
         assert len(item.item_sentence.sentences) == 1
         assert len(item.table_structs) == 1
-        # TODO assert list(item.texts()) ==
+        assert list(item.texts()) == ["Item 1", "Sentence 1", "Sentence 2", "Sentence 3"]
 
         # TableStruct
         table_struct: TableStruct = item.table_structs[0]
@@ -100,4 +100,4 @@ class TestItem:
         assert len(table_row.table_columns) == 2
         assert len(table_row.table_columns[0].sentences) == 1
         assert len(table_row.table_columns[1].sentences) == 1
-        # TODO assert list(table_struct.texts()) ==
+        assert list(table_struct.texts()) == ["Sentence 2", "Sentence 3"]

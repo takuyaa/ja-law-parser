@@ -1841,6 +1841,12 @@ class TableColumn(WithSentences, tag="TableColumn", search_mode="unordered"):
     remarks: Optional["Remarks"] = None
     columns: Optional[list["Column"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        # TODO Other fields
+        if self.sentences is not None:
+            for sentence in self.sentences:
+                yield sentence.text
+
 
 class TableRow(BaseXmlModel, tag="TableRow"):
     """
@@ -1852,6 +1858,11 @@ class TableRow(BaseXmlModel, tag="TableRow"):
 
     table_columns: list[TableColumn]
 
+    def texts(self) -> Generator[str, None, None]:
+        for column in self.table_columns:
+            for text in column.texts():
+                yield text
+
 
 class TableHeaderRow(WithTableHeaderColumns, tag="TableHeaderRow"):
     """
@@ -1860,6 +1871,11 @@ class TableHeaderRow(WithTableHeaderColumns, tag="TableHeaderRow"):
     Attributes:
         table_header_columns: 表欄名
     """
+
+    def texts(self) -> Generator[str, None, None]:
+        if self.table_header_columns is not None:
+            for column in self.table_header_columns:
+                yield column.text
 
 
 class Table(BaseXmlModel, tag="Table"):
@@ -1877,6 +1893,15 @@ class Table(BaseXmlModel, tag="Table"):
 
     table_header_rows: Optional[list[TableHeaderRow]] = None
     table_rows: list[TableRow]
+
+    def texts(self) -> Generator[str, None, None]:
+        if self.table_header_rows is not None:
+            for row in self.table_header_rows:
+                for text in row.texts():
+                    yield text
+        for row in self.table_rows:
+            for text in row.texts():
+                yield text
 
 
 class ItemSentence(WithSentences, tag="ItemSentence", search_mode="unordered"):
@@ -1931,6 +1956,18 @@ class TableStruct(WithTableStructTitle, tag="TableStruct"):
     pre_remarks: Optional[list["Remarks"]] = None
     table: Table
     post_remarks: Optional[list["Remarks"]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        if self.pre_remarks is not None:
+            for remarks in self.pre_remarks:
+                for text in remarks.texts():
+                    yield text
+        for text in self.table.texts():
+            yield text
+        if self.post_remarks is not None:
+            for remarks in self.post_remarks:
+                for text in remarks.texts():
+                    yield text
 
 
 class FigStruct(WithFigStructTitle, tag="FigStruct"):
@@ -2595,6 +2632,10 @@ class Item(WithItemTitle, tag="Item", search_mode="unordered"):
         if self.subitems is not None:
             for subitem in self.subitems:
                 for text in subitem.texts():
+                    yield text
+        if self.table_structs is not None:
+            for struct in self.table_structs:
+                for text in struct.texts():
                     yield text
         # TODO Other fields https://www.tashiro-ip.com/ip-law/xml-schema.html#e-Item
 
@@ -3370,6 +3411,17 @@ class Remarks(WithRemarksLabel, WithSentences, tag="Remarks"):
     """
 
     items: Optional[list[Item]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        if self.remarks_label is not None:
+            yield self.remarks_label
+        if self.items is not None:
+            for item in self.items:
+                for text in item.texts():
+                    yield text
+        if self.sentences is not None:
+            for sentence in self.sentences:
+                yield sentence.text
 
 
 class NewProvision(
