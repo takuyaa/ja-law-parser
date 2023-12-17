@@ -3469,7 +3469,7 @@ class NewProvision(
     law_body: Optional[LawBody] = None
 
     def texts(self) -> Generator[str, None, None]:
-        yield from texts_text(self.law_title)
+        yield from texts_opt_text(self.law_title)
         # TODO Other fields
 
 
