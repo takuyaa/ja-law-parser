@@ -1930,6 +1930,11 @@ class ClassSentence(WithSentences, tag="ClassSentence", search_mode="unordered")
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
+
 
 class TableStruct(WithTableStructTitle, tag="TableStruct"):
     """
@@ -2640,6 +2645,11 @@ class Class(WithClassTitle, tag="Class", search_mode="unordered"):
     class_sentence: ClassSentence
     items: Optional[list[Item]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.class_title)
+        yield from texts_texts(self.class_sentence)
+        yield from texts_opt_list_texts(self.items)
+
 
 class AmendProvisionSentence(WithSentences, tag="AmendProvisionSentence"):
     """
@@ -2648,6 +2658,9 @@ class AmendProvisionSentence(WithSentences, tag="AmendProvisionSentence"):
     Attributes:
         sentences: 段
     """
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
 
 
 class AmendProvision(BaseXmlModel, tag="AmendProvision"):
@@ -2661,6 +2674,10 @@ class AmendProvision(BaseXmlModel, tag="AmendProvision"):
 
     amend_provision_sentence: Optional[AmendProvisionSentence] = None
     new_provisions: Optional[list["NewProvision"]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_texts(self.amend_provision_sentence)
+        yield from texts_opt_list_texts(self.new_provisions)
 
 
 class ParagraphSentence(WithSentences, tag="ParagraphSentence"):
@@ -2710,9 +2727,15 @@ class Paragraph(WithParagraphCaption, WithParagraphNum, tag="Paragraph", search_
     items: Optional[list[Item]] = None
 
     def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.paragraph_caption)
+        # Skip paragraph_num
         yield from texts_texts(self.paragraph_sentence)
+        yield from texts_opt_list_texts(self.amend_provisions)
+        yield from texts_opt_list_texts(self.classes)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
         yield from texts_opt_list_texts(self.items)
-        # TODO Other fields https://www.tashiro-ip.com/ip-law/xml-schema.html#e-Paragraph
 
 
 class Article(
@@ -3039,6 +3062,9 @@ class Preamble(BaseXmlModel, tag="Preamble"):
 
     paragraphs: list[Paragraph]
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_list_texts(self.paragraphs)
+
 
 class MainProvision(BaseXmlModel, tag="MainProvision", search_mode="unordered"):
     """
@@ -3313,7 +3339,7 @@ class LawBody(
     def texts(self) -> Generator[str, None, None]:
         yield from texts_opt_text(self.law_title)
         yield from texts_opt_text(self.enact_statement)
-        # TODO self.preamble
+        yield from texts_opt_texts(self.preamble)
         yield from texts_texts(self.main_provision)
         # TODO Other fields
 
@@ -3442,6 +3468,10 @@ class NewProvision(
     remarks: Optional[list[Remarks]] = None
     law_body: Optional[LawBody] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_text(self.law_title)
+        # TODO Other fields
+
 
 class Law(BaseXmlModel, tag="Law"):
     """
@@ -3502,6 +3532,10 @@ class TextP(Protocol):
 class TextsP(Protocol):
     def texts(self) -> Generator[str, None, None]:
         ...
+
+
+def texts_text(obj: TextP) -> Generator[str, None, None]:
+    yield obj.text
 
 
 def texts_texts(obj: TextsP) -> Generator[str, None, None]:
