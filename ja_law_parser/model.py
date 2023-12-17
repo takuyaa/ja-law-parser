@@ -2618,7 +2618,9 @@ class Item(WithItemTitle, tag="Item", search_mode="unordered"):
         yield from texts_texts(self.item_sentence)
         yield from texts_opt_list_texts(self.subitems)
         yield from texts_opt_list_texts(self.table_structs)
-        # TODO Other fields https://www.tashiro-ip.com/ip-law/xml-schema.html#e-Item
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
 
 
 class Class(WithClassTitle, tag="Class", search_mode="unordered"):
