@@ -1,7 +1,7 @@
 import inspect
 import sys
 from functools import cached_property
-from typing import Literal, Optional, Union
+from typing import Generator, Literal, Optional, Protocol, Sequence, Union
 
 from lxml import etree
 from pydantic import Field, NonNegativeInt, PositiveInt, computed_field
@@ -64,6 +64,9 @@ class Fig(BaseXmlModel, tag="Fig"):
 
     src: str = attr(name="src")
 
+    def texts(self) -> Generator[str, None, None]:
+        yield self.src
+
 
 class ArithFormula(BaseXmlModel, tag="ArithFormula"):
     """
@@ -99,7 +102,7 @@ class QuoteStruct(BaseXmlModel, arbitrary_types_allowed=True):
 
     @computed_field  # type: ignore[misc]
     @cached_property
-    def contents(self) -> list[QuoteStructT]:
+    def contents(self) -> list[QuoteStructT]:  # noqa: C901
         element = self.raw_element
         contents: list[QuoteStructT] = []
 
@@ -111,8 +114,24 @@ class QuoteStruct(BaseXmlModel, arbitrary_types_allowed=True):
         for elm in element.iterchildren():
             if elm.tag == "Sentence":
                 contents.append(Sentence(raw_element=elm))
+            elif elm.tag == "Item":
+                contents.append(Item.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "Paragraph":
+                contents.append(Paragraph.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "List":
+                contents.append(List.from_xml_tree(root=elm))  # type: ignore[arg-type]
             elif elm.tag == "Fig":
                 contents.append(Fig.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "FigStruct":
+                contents.append(FigStruct.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "Table":
+                contents.append(Table.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "TableStruct":
+                contents.append(TableStruct.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "AppdxTable":
+                contents.append(AppdxTable.from_xml_tree(root=elm))  # type: ignore[arg-type]
+            elif elm.tag == "ArithFormula":
+                contents.append(ArithFormula.from_xml_tree(root=elm))  # type: ignore[arg-type]
             else:
                 raise NotImplementedError(f"{elm.tag} is not implemented yet")
 
@@ -479,6 +498,9 @@ class Style(BaseXmlModel, tag="Style"):
     """
 
     figs: Optional[list[Fig]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.figs)
 
 
 class Format(BaseXmlModel, tag="Format"):
@@ -1750,6 +1772,9 @@ class Column(WithSentences, tag="Column"):
     line_break: Optional[bool] = attr(Name="LineBreak", default=None)
     align: Optional[Literal["left", "center", "right", "justify"]] = attr(Name="Align", default=None)
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+
 
 class TableColumn(WithSentences, tag="TableColumn", search_mode="unordered"):
     """
@@ -1807,6 +1832,7 @@ class TableColumn(WithSentences, tag="TableColumn", search_mode="unordered"):
     paragraphs: Optional[list["Paragraph"]] = None
     items: Optional[list["Item"]] = None
     subitems1: Optional[list["Subitem1"]] = None
+    # TODO
     # subitems2: Optional[list[Subitem2]] = None
     # subitems3: Optional[list[Subitem3]] = None
     # subitems4: Optional[list[Subitem4]] = None
@@ -1820,6 +1846,10 @@ class TableColumn(WithSentences, tag="TableColumn", search_mode="unordered"):
     remarks: Optional["Remarks"] = None
     columns: Optional[list["Column"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        # TODO Other fields
+        yield from texts_opt_list_text(self.sentences)
+
 
 class TableRow(BaseXmlModel, tag="TableRow"):
     """
@@ -1831,6 +1861,9 @@ class TableRow(BaseXmlModel, tag="TableRow"):
 
     table_columns: list[TableColumn]
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_list_texts(self.table_columns)
+
 
 class TableHeaderRow(WithTableHeaderColumns, tag="TableHeaderRow"):
     """
@@ -1839,6 +1872,9 @@ class TableHeaderRow(WithTableHeaderColumns, tag="TableHeaderRow"):
     Attributes:
         table_header_columns: 表欄名
     """
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.table_header_columns)
 
 
 class Table(BaseXmlModel, tag="Table"):
@@ -1857,6 +1893,10 @@ class Table(BaseXmlModel, tag="Table"):
     table_header_rows: Optional[list[TableHeaderRow]] = None
     table_rows: list[TableRow]
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.table_header_rows)
+        yield from texts_list_texts(self.table_rows)
+
 
 class ItemSentence(WithSentences, tag="ItemSentence", search_mode="unordered"):
     """
@@ -1871,6 +1911,11 @@ class ItemSentence(WithSentences, tag="ItemSentence", search_mode="unordered"):
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
+
 
 class ClassSentence(WithSentences, tag="ClassSentence", search_mode="unordered"):
     """
@@ -1884,6 +1929,11 @@ class ClassSentence(WithSentences, tag="ClassSentence", search_mode="unordered")
 
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
 
 
 class TableStruct(WithTableStructTitle, tag="TableStruct"):
@@ -1901,6 +1951,11 @@ class TableStruct(WithTableStructTitle, tag="TableStruct"):
     table: Table
     post_remarks: Optional[list["Remarks"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.pre_remarks)
+        yield from texts_texts(self.table)
+        yield from texts_opt_list_texts(self.post_remarks)
+
 
 class FigStruct(WithFigStructTitle, tag="FigStruct"):
     """
@@ -1916,6 +1971,11 @@ class FigStruct(WithFigStructTitle, tag="FigStruct"):
     pre_remarks: Optional[list["Remarks"]] = None
     fig: Fig
     post_remarks: Optional[list["Remarks"]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.pre_remarks)
+        yield from texts_texts(self.fig)
+        yield from texts_opt_list_texts(self.post_remarks)
 
 
 class NoteStruct(WithNoteStructTitle, tag="NoteStruct"):
@@ -1949,6 +2009,11 @@ class StyleStruct(WithStyleStructTitle, tag="StyleStruct"):
     style: Style
     post_remarks: Optional[list["Remarks"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.pre_remarks)
+        yield from texts_texts(self.style)
+        yield from texts_opt_list_texts(self.post_remarks)
+
 
 class FormatStruct(WithFormatStructTitle, tag="FormatStruct"):
     """
@@ -1976,6 +2041,10 @@ class ListSentence(WithSentences, tag="ListSentence"):
     """
 
     columns: Optional[list[Column]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
 
 
 class Sublist1Sentence(WithSentences, tag="Sublist1Sentence"):
@@ -2063,6 +2132,10 @@ class List(BaseXmlModel, tag="List"):
     list_sentence: ListSentence
     sublists1: Optional[list[Sublist1]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_texts(self.list_sentence)
+        # TODO yield from texts_opt_list_texts(self.sublists1)
+
 
 class Subitem1Sentence(WithSentences, tag="Subitem1Sentence", search_mode="unordered"):
     """
@@ -2076,6 +2149,11 @@ class Subitem1Sentence(WithSentences, tag="Subitem1Sentence", search_mode="unord
 
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
 
 
 class Subitem2Sentence(WithSentences, tag="Subitem2Sentence", search_mode="unordered"):
@@ -2501,6 +2579,15 @@ class Subitem1(WithSubitem1Title, tag="Subitem1", search_mode="unordered"):
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subitem1_title)
+        yield from texts_texts(self.subitem1_sentence)
+        # TODO yield from texts_opt_list_texts(self.subitems2)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
+
 
 class Item(WithItemTitle, tag="Item", search_mode="unordered"):
     """
@@ -2531,6 +2618,15 @@ class Item(WithItemTitle, tag="Item", search_mode="unordered"):
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.item_title)
+        yield from texts_texts(self.item_sentence)
+        yield from texts_opt_list_texts(self.subitems)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
+
 
 class Class(WithClassTitle, tag="Class", search_mode="unordered"):
     """
@@ -2549,6 +2645,11 @@ class Class(WithClassTitle, tag="Class", search_mode="unordered"):
     class_sentence: ClassSentence
     items: Optional[list[Item]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.class_title)
+        yield from texts_texts(self.class_sentence)
+        yield from texts_opt_list_texts(self.items)
+
 
 class AmendProvisionSentence(WithSentences, tag="AmendProvisionSentence"):
     """
@@ -2557,6 +2658,9 @@ class AmendProvisionSentence(WithSentences, tag="AmendProvisionSentence"):
     Attributes:
         sentences: 段
     """
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
 
 
 class AmendProvision(BaseXmlModel, tag="AmendProvision"):
@@ -2571,6 +2675,10 @@ class AmendProvision(BaseXmlModel, tag="AmendProvision"):
     amend_provision_sentence: Optional[AmendProvisionSentence] = None
     new_provisions: Optional[list["NewProvision"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_texts(self.amend_provision_sentence)
+        yield from texts_opt_list_texts(self.new_provisions)
+
 
 class ParagraphSentence(WithSentences, tag="ParagraphSentence"):
     """
@@ -2579,6 +2687,9 @@ class ParagraphSentence(WithSentences, tag="ParagraphSentence"):
     Attributes:
         sentences: 段
     """
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
 
 
 class Paragraph(WithParagraphCaption, WithParagraphNum, tag="Paragraph", search_mode="unordered"):
@@ -2615,6 +2726,17 @@ class Paragraph(WithParagraphCaption, WithParagraphNum, tag="Paragraph", search_
     style_structs: Optional[list[StyleStruct]] = None
     items: Optional[list[Item]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.paragraph_caption)
+        # Skip paragraph_num
+        yield from texts_texts(self.paragraph_sentence)
+        yield from texts_opt_list_texts(self.amend_provisions)
+        yield from texts_opt_list_texts(self.classes)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.items)
+
 
 class Article(
     WithArticleCaption,
@@ -2643,6 +2765,15 @@ class Article(
 
     paragraphs: list[Paragraph]
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.article_caption)
+
+        article_title: ArticleTitle = self.article_title
+        yield article_title.text
+
+        yield from texts_list_texts(self.paragraphs)
+        yield from texts_opt_text(self.suppl_note)
+
 
 class Division(WithDivisionTitle, tag="Division"):
     """
@@ -2662,6 +2793,10 @@ class Division(WithDivisionTitle, tag="Division"):
     hide: Optional[bool] = attr(name="Hide", default=None)
 
     articles: Optional[list[Article]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.division_title)
+        yield from texts_opt_list_texts(self.articles)
 
 
 class Subsection(WithSubsectionTitle, tag="Subsection", search_mode="unordered"):
@@ -2684,6 +2819,11 @@ class Subsection(WithSubsectionTitle, tag="Subsection", search_mode="unordered")
 
     articles: Optional[list[Article]] = None
     divisions: Optional[list[Division]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subsection_title)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.divisions)
 
 
 class Section(WithSectionTitle, tag="Section", search_mode="unordered"):
@@ -2709,6 +2849,12 @@ class Section(WithSectionTitle, tag="Section", search_mode="unordered"):
     subsections: Optional[list[Subsection]] = None
     divisions: Optional[list[Division]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.section_title)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.subsections)
+        yield from texts_opt_list_texts(self.divisions)
+
 
 class Chapter(WithChapterTitle, tag="Chapter", search_mode="unordered"):
     """
@@ -2731,6 +2877,11 @@ class Chapter(WithChapterTitle, tag="Chapter", search_mode="unordered"):
     articles: Optional[list[Article]] = None
     sections: Optional[list[Section]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.chapter_title)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.sections)
+
 
 class Part(WithPartTitle, tag="Part", search_mode="unordered"):
     """
@@ -2752,6 +2903,11 @@ class Part(WithPartTitle, tag="Part", search_mode="unordered"):
 
     articles: Optional[list[Article]] = None
     chapters: Optional[list[Chapter]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.part_title)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.chapters)
 
 
 class TOCDivision(WithDivisionTitle, WithArticleRange, tag="TOCDivision"):
@@ -2906,6 +3062,9 @@ class Preamble(BaseXmlModel, tag="Preamble"):
 
     paragraphs: list[Paragraph]
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_list_texts(self.paragraphs)
+
 
 class MainProvision(BaseXmlModel, tag="MainProvision", search_mode="unordered"):
     """
@@ -2928,6 +3087,13 @@ class MainProvision(BaseXmlModel, tag="MainProvision", search_mode="unordered"):
     sections: Optional[list[Section]] = None
     articles: Optional[list[Article]] = None
     paragraphs: Optional[list[Paragraph]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.parts)
+        yield from texts_opt_list_texts(self.chapters)
+        yield from texts_opt_list_texts(self.sections)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.paragraphs)
 
 
 class SupplProvisionAppdxTable(
@@ -3170,6 +3336,13 @@ class LawBody(
     appdx_figs: Optional[list[AppdxFig]] = None
     appdx_formats: Optional[list[AppdxFormat]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.law_title)
+        yield from texts_opt_text(self.enact_statement)
+        yield from texts_opt_texts(self.preamble)
+        yield from texts_texts(self.main_provision)
+        # TODO Other fields
+
 
 class Remarks(WithRemarksLabel, WithSentences, tag="Remarks"):
     """
@@ -3182,6 +3355,11 @@ class Remarks(WithRemarksLabel, WithSentences, tag="Remarks"):
     """
 
     items: Optional[list[Item]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.remarks_label)
+        yield from texts_opt_list_texts(self.items)
+        yield from texts_opt_list_text(self.sentences)
 
 
 class NewProvision(
@@ -3290,6 +3468,10 @@ class NewProvision(
     remarks: Optional[list[Remarks]] = None
     law_body: Optional[LawBody] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.law_title)
+        # TODO Other fields
+
 
 class Law(BaseXmlModel, tag="Law"):
     """
@@ -3328,6 +3510,9 @@ class Law(BaseXmlModel, tag="Law"):
     law_num: str = element(tag="LawNum")
     law_body: LawBody
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_texts(self.law_body)
+
 
 def get_attr(element: etree._Element, tag: str) -> Optional[str]:
     attr: Optional[Union[str, bytes]] = element.attrib.get(tag)
@@ -3336,6 +3521,56 @@ def get_attr(element: etree._Element, tag: str) -> Optional[str]:
     elif isinstance(attr, bytes):
         attr = attr.decode()
     return attr
+
+
+class TextP(Protocol):
+    @property
+    def text(self) -> str:
+        ...
+
+
+class TextsP(Protocol):
+    def texts(self) -> Generator[str, None, None]:
+        ...
+
+
+def texts_text(obj: TextP) -> Generator[str, None, None]:
+    yield obj.text
+
+
+def texts_texts(obj: TextsP) -> Generator[str, None, None]:
+    for text in obj.texts():
+        yield text
+
+
+def texts_list_texts(obj: Sequence[TextsP]) -> Generator[str, None, None]:
+    for elem in obj:
+        for text in elem.texts():
+            yield text
+
+
+def texts_opt_text(obj: Optional[TextP]) -> Generator[str, None, None]:
+    if obj is not None:
+        yield obj.text
+
+
+def texts_opt_texts(obj: Optional[TextsP]) -> Generator[str, None, None]:
+    if obj is not None:
+        for text in obj.texts():
+            yield text
+
+
+def texts_opt_list_text(obj: Optional[Sequence[TextP]]) -> Generator[str, None, None]:
+    if obj is not None:
+        for elem in obj:
+            yield elem.text
+
+
+def texts_opt_list_texts(obj: Optional[Sequence[TextsP]]) -> Generator[str, None, None]:
+    if obj is not None:
+        for elem in obj:
+            for text in elem.texts():
+                yield text
 
 
 # For avoiding "model is partially initialized" error.

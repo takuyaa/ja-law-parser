@@ -2,7 +2,7 @@ from ja_law_parser.model import Article, ArticleCaption, Line, TaggedText, Text
 
 
 class TestArticle:
-    def test_article_caption(self) -> None:
+    def test_simple_article(self) -> None:
         xml = """
         <Article Num="132">
           <ArticleCaption>テスト<Line><ArithFormula><Fig src="./pict/2JH00000021313.jpg"/></ArithFormula></Line>の見出し</ArticleCaption>
@@ -11,9 +11,13 @@ class TestArticle:
         </Article>
         """  # noqa: E501
 
-        article_caption: ArticleCaption = Article.from_xml(xml).article_caption
+        article: Article = Article.from_xml(xml)
+        assert list(article.texts()) == ["テストの見出し", "テストの条名", "テストの項文"]
+
+        article_caption: ArticleCaption = article.article_caption
         assert article_caption is not None
         assert article_caption.text == "テストの見出し"
+
         tagged_text: TaggedText = article_caption.tagged_text
         assert len(tagged_text) == 3
         e0: Text = tagged_text[0]
