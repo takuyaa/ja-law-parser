@@ -21,7 +21,7 @@ docs: clean
 	poetry run make -C docs html
 
 .PHONY: build
-build: clean
+build: clean lint test docs
 	@poetry build
 
 .PHONY: publish
