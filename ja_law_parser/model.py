@@ -2711,6 +2711,7 @@ class Paragraph(WithParagraphCaption, WithParagraphNum, tag="Paragraph", search_
         fig_structs: 図項目
         style_structs: 様式項目
         items: 号
+        lists: 列記
     """
 
     num: NonNegativeInt = attr(name="Num")
@@ -2725,6 +2726,7 @@ class Paragraph(WithParagraphCaption, WithParagraphNum, tag="Paragraph", search_
     fig_structs: Optional[list[FigStruct]] = None
     style_structs: Optional[list[StyleStruct]] = None
     items: Optional[list[Item]] = None
+    lists: Optional[list[List]] = None
 
     def texts(self) -> Generator[str, None, None]:
         yield from texts_opt_text(self.paragraph_caption)
@@ -2736,6 +2738,7 @@ class Paragraph(WithParagraphCaption, WithParagraphNum, tag="Paragraph", search_
         yield from texts_opt_list_texts(self.fig_structs)
         yield from texts_opt_list_texts(self.style_structs)
         yield from texts_opt_list_texts(self.items)
+        yield from texts_opt_list_texts(self.lists)
 
 
 class Article(
