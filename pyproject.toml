@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ja-law-parser"
-version = "0.1.0"
+version = "0.0.0"
 description = "A Japanese law parser"
 license = "MIT"
 authors = ["Takuya Asano <takuya.a@gmail.com>"]
@@ -13,7 +13,6 @@ python = ">=3.9"
 pydantic-xml = { extras = ["lxml"], version = "^2.3.0" }
 pydantic = "^2.4.2"
 
-
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
 sphinx = "^7.2.6"
@@ -24,9 +23,13 @@ lxml-stubs = "^0.4.0"
 tqdm = "^4.66.1"
 types-tqdm = "^4.66.0.4"
 
+[tool.poetry-dynamic-versioning]
+enable = true
+style = "pep440"
+
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.ruff]
 line-length = 119
