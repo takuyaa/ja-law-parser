@@ -1,5 +1,7 @@
 # Japanese Law Parser
 
+![PyPI - Version](https://img.shields.io/pypi/v/ja-law-parser)
+
 [法令標準 XML スキーマ](https://elaws.e-gov.go.jp/file/XMLSchemaForJapaneseLaw_v3.xsd)に準拠する XML ファイルを解析し、 [pydantic](https://docs.pydantic.dev/) のモデルに変換するライブラリです。
 
 [e-Gov法令検索](https://elaws.e-gov.go.jp/)で公開されている、日本国の法令 XML（憲法・法律・政令・勅令・府令・省令・規則）をパースし、解析結果を Python から利用することができます。
@@ -40,7 +42,7 @@ print(paragraph11.paragraph_sentence.sentences[1].text)
 # => この憲法が国民に保障する基本的人権は、侵すことのできない永久の権利として、現在及び将来の国民に与へられる。
 ```
 
-詳細は API ドキュメントを参照してください。
+詳細は [API ドキュメント](https://takuyaa.github.io/ja-law-parser/)を参照してください。
 
 ## Reference
 
