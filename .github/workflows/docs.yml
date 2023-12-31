@@ -1,8 +1,7 @@
 name: Deploy API documents to GitHub Pages
 on:
   push:
-    # TODO: Change to "main" when ready to merge
-    branches: ["docs-workflow"]
+    branches: ["main"]
   workflow_dispatch:
 permissions:
   contents: read
