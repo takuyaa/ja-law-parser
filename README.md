@@ -40,7 +40,7 @@ print(paragraph11.paragraph_sentence.sentences[1].text)
 # => この憲法が国民に保障する基本的人権は、侵すことのできない永久の権利として、現在及び将来の国民に与へられる。
 ```
 
-詳細は API ドキュメントを参照してください。
+詳細は [API ドキュメント](https://takuyaa.github.io/ja-law-parser/)を参照してください。
 
 ## Reference
 
