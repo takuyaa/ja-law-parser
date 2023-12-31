@@ -1,7 +1,7 @@
 name: Deploy API documents to GitHub Pages
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,8 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
