@@ -1,6 +1,7 @@
 # Japanese Law Parser
 
-![PyPI - Version](https://img.shields.io/pypi/v/ja-law-parser)
+![PyPI - Version](https://img.shields.io/pypi/v/ja-law-parser?link=https%3A%2F%2Fpypi.org%2Fproject%2Fja-law-parser%2F)
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/takuyaa/ja-law-parser/test.yml?link=https%3A%2F%2Fgithub.com%2Ftakuyaa%2Fja-law-parser%2Factions%2Fworkflows%2Ftest.yml)
 
 [法令標準 XML スキーマ](https://elaws.e-gov.go.jp/file/XMLSchemaForJapaneseLaw_v3.xsd)に準拠する XML ファイルを解析し、 [pydantic](https://docs.pydantic.dev/) のモデルに変換するライブラリです。
 
