@@ -12,8 +12,16 @@
 
 ## Installation
 
+### pip
+
 ```shell
-pip install git+https://github.com/takuyaa/ja-law-parser.git
+pip install ja-law-parser
+```
+
+### poetry
+
+```shell
+poetry add ja-law-parser
 ```
 
 ## Usage
