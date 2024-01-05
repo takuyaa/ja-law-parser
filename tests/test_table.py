@@ -45,15 +45,25 @@ class TestSentence:
         assert len(subitem1.subitem1_sentence.sentences) == 1
         assert subitem1.subitem1_sentence.sentences[0].text == "Subitem1 sentence"
         assert len(subitem1.subitems2) == 2
+        assert list(subitem1.texts()) == [
+            "イ",
+            "Subitem1 sentence",
+            "（１）",
+            "Subitem2 sentence 1",
+            "（２）",
+            "Subitem2 sentence 2",
+        ]
 
         subitem2_1: Subitem2 = subitem1.subitems2[0]
         assert subitem2_1.num == "1"
         assert subitem2_1.subitem2_title.text == "（１）"
         assert len(subitem2_1.subitem2_sentence.sentences) == 1
         assert subitem2_1.subitem2_sentence.sentences[0].text == "Subitem2 sentence 1"
+        assert list(subitem2_1.texts()) == ["（１）", "Subitem2 sentence 1"]
 
         subitem2_2: Subitem2 = subitem1.subitems2[1]
         assert subitem2_2.num == "2"
         assert subitem2_2.subitem2_title.text == "（２）"
         assert len(subitem2_2.subitem2_sentence.sentences) == 1
         assert subitem2_2.subitem2_sentence.sentences[0].text == "Subitem2 sentence 2"
+        assert list(subitem2_2.texts()) == ["（２）", "Subitem2 sentence 2"]
