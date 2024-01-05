@@ -33,7 +33,7 @@ class TestList:
             </Sublist1Sentence>
             <Sublist2>
               <Sublist2Sentence>
-                <Sentence>Sentence2Sentence 2</Sentence>
+                <Sentence>Sublist2Sentence 2</Sentence>
               </Sublist2Sentence>
               <Sublist3>
                 <Sublist3Sentence>
