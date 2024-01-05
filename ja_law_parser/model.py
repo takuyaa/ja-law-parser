@@ -2057,6 +2057,10 @@ class Sublist1Sentence(WithSentences, tag="Sublist1Sentence"):
 
     columns: Optional[list[Column]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+
 
 class Sublist2Sentence(WithSentences, tag="Sublist2Sentence"):
     """
@@ -2068,6 +2072,10 @@ class Sublist2Sentence(WithSentences, tag="Sublist2Sentence"):
     """
 
     columns: Optional[list[Column]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
 
 
 class Sublist3Sentence(WithSentences, tag="Sublist3Sentence"):
@@ -2081,6 +2089,10 @@ class Sublist3Sentence(WithSentences, tag="Sublist3Sentence"):
 
     columns: Optional[list[Column]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+
 
 class Sublist3(BaseXmlModel, tag="Sublist3"):
     """
@@ -2091,6 +2103,9 @@ class Sublist3(BaseXmlModel, tag="Sublist3"):
     """
 
     sublist3_sentence: Sublist3Sentence
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_texts(self.sublist3_sentence)
 
 
 class Sublist2(BaseXmlModel, tag="Sublist2"):
@@ -2105,6 +2120,10 @@ class Sublist2(BaseXmlModel, tag="Sublist2"):
     sublist2_sentence: Sublist2Sentence
     sublists3: Optional[list[Sublist3]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_texts(self.sublist2_sentence)
+        yield from texts_opt_list_texts(self.sublists3)
+
 
 class Sublist1(BaseXmlModel, tag="Sublist1"):
     """
@@ -2117,6 +2136,10 @@ class Sublist1(BaseXmlModel, tag="Sublist1"):
 
     sublist1_sentence: Sublist1Sentence
     sublists2: Optional[list[Sublist2]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_texts(self.sublist1_sentence)
+        yield from texts_opt_list_texts(self.sublists2)
 
 
 class List(BaseXmlModel, tag="List"):
@@ -2133,7 +2156,7 @@ class List(BaseXmlModel, tag="List"):
 
     def texts(self) -> Generator[str, None, None]:
         yield from texts_texts(self.list_sentence)
-        # TODO yield from texts_opt_list_texts(self.sublists1)
+        yield from texts_opt_list_texts(self.sublists1)
 
 
 class Subitem1Sentence(WithSentences, tag="Subitem1Sentence", search_mode="unordered"):
