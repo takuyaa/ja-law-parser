@@ -35,10 +35,19 @@ class TestLawBody:
               </Paragraph>
             </Article>
           </MainProvision>
+          <SupplProvision>
+            <SupplProvisionLabel>附　則</SupplProvisionLabel>
+            <Paragraph Num="1">
+              <ParagraphNum/>
+              <ParagraphSentence>
+                <Sentence Num="1">附則文</Sentence>
+              </ParagraphSentence>
+            </Paragraph>
+          </SupplProvision>
         </LawBody>
         """  # noqa: E501
         law_body: LawBody = LawBody.from_xml(xml)
-        assert list(law_body.texts()) == ["タイトル", "（条見出し）", "条名", "条文"]
+        assert list(law_body.texts()) == ["タイトル", "（条見出し）", "条名", "条文", "附　則", "附則文"]
 
     def test_law_title(self) -> None:
         xml = """\
