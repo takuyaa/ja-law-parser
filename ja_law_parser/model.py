@@ -88,6 +88,9 @@ class ArithFormula(BaseXmlModel, tag="ArithFormula"):
         # At this moment, the contents don't have any text.
         return ""
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.figs)
+
 
 QuoteStructT = Union["Sentence", Fig, "TableStruct", Text]
 
@@ -488,6 +491,13 @@ class Note(WithSentences, tag="Note"):
     arith_formulas: Optional[list[ArithFormula]] = None
     lists: Optional[list["List"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.figs)
+        yield from texts_opt_list_texts(self.items)
+        yield from texts_opt_list_texts(self.arith_formulas)
+        yield from texts_opt_list_texts(self.lists)
+
 
 class Style(BaseXmlModel, tag="Style"):
     """
@@ -512,6 +522,9 @@ class Format(BaseXmlModel, tag="Format"):
     """
 
     figs: Optional[list[Fig]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.figs)
 
 
 class ParagraphCaption(TaggedText, tag="ParagraphCaption"):
@@ -1992,6 +2005,12 @@ class NoteStruct(WithNoteStructTitle, tag="NoteStruct"):
     note: Note
     post_remarks: Optional[list["Remarks"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.note_struct_title)
+        yield from texts_opt_list_texts(self.pre_remarks)
+        yield from texts_texts(self.note)
+        yield from texts_opt_list_texts(self.post_remarks)
+
 
 class StyleStruct(WithStyleStructTitle, tag="StyleStruct"):
     """
@@ -2028,6 +2047,12 @@ class FormatStruct(WithFormatStructTitle, tag="FormatStruct"):
     pre_remarks: Optional[list["Remarks"]] = None
     format: Format
     post_remarks: Optional[list["Remarks"]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.format_struct_title)
+        yield from texts_opt_list_texts(self.pre_remarks)
+        yield from texts_texts(self.format)
+        yield from texts_opt_list_texts(self.post_remarks)
 
 
 class ListSentence(WithSentences, tag="ListSentence"):
@@ -3264,6 +3289,9 @@ class SupplProvisionAppdxTable(
 
     table_structs: Optional[list[TableStruct]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.table_structs)
+
 
 class SupplProvisionAppdxStyle(
     WithSupplProvisionAppdxStyleTitle, WithRelatedArticleNum, tag="SupplProvisionAppdxStyle"
@@ -3283,6 +3311,9 @@ class SupplProvisionAppdxStyle(
 
     style_structs: Optional[list[StyleStruct]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.style_structs)
+
 
 class SupplProvisionAppdx(WithArithFormulaNum, WithRelatedArticleNum, tag="SupplProvisionAppdx"):
     """
@@ -3299,6 +3330,9 @@ class SupplProvisionAppdx(WithArithFormulaNum, WithRelatedArticleNum, tag="Suppl
     num: Optional[str] = attr(name="Num", default=None)
 
     arith_formulas: Optional[list[ArithFormula]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.arith_formulas)
 
 
 class SupplProvision(WithSupplProvisionLabel, tag="SupplProvision", search_mode="unordered"):
@@ -3330,6 +3364,15 @@ class SupplProvision(WithSupplProvisionLabel, tag="SupplProvision", search_mode=
     suppl_provision_appdx_styles: Optional[list[SupplProvisionAppdxStyle]] = None
     suppl_provision_appdx: Optional[list[SupplProvisionAppdx]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.suppl_provision_label)
+        yield from texts_opt_list_texts(self.chapters)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.paragraphs)
+        yield from texts_opt_list_texts(self.suppl_provision_appdx_tables)
+        yield from texts_opt_list_texts(self.suppl_provision_appdx_styles)
+        yield from texts_opt_list_texts(self.suppl_provision_appdx)
+
 
 class AppdxTable(WithAppdxTableTitle, WithRelatedArticleNum, tag="AppdxTable", search_mode="unordered"):
     """
@@ -3350,6 +3393,13 @@ class AppdxTable(WithAppdxTableTitle, WithRelatedArticleNum, tag="AppdxTable", s
     table_structs: Optional[list[TableStruct]] = None
     items: Optional[list[Item]] = None
     remarks: Optional[list["Remarks"]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.appdx_table_title)
+        yield from texts_opt_text(self.related_article_num)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.items)
+        yield from texts_opt_list_texts(self.remarks)
 
 
 class AppdxNote(WithAppdxNoteTitle, WithRelatedArticleNum, tag="AppdxNote", search_mode="unordered"):
@@ -3374,6 +3424,14 @@ class AppdxNote(WithAppdxNoteTitle, WithRelatedArticleNum, tag="AppdxNote", sear
     table_structs: Optional[list[TableStruct]] = None
     remarks: Optional[list["Remarks"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.appdx_note_title)
+        yield from texts_opt_text(self.related_article_num)
+        yield from texts_opt_list_texts(self.note_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.remarks)
+
 
 class AppdxStyle(WithAppdxStyleTitle, WithRelatedArticleNum, tag="AppdxStyle"):
     """
@@ -3393,6 +3451,12 @@ class AppdxStyle(WithAppdxStyleTitle, WithRelatedArticleNum, tag="AppdxStyle"):
     style_structs: Optional[list[StyleStruct]] = None
     remarks: Optional[list["Remarks"]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.appdx_style_title)
+        yield from texts_opt_text(self.related_article_num)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.remarks)
+
 
 class Appdx(WithArithFormulaNum, WithRelatedArticleNum, tag="Appdx"):
     """
@@ -3407,6 +3471,12 @@ class Appdx(WithArithFormulaNum, WithRelatedArticleNum, tag="Appdx"):
 
     arith_formulas: Optional[list[ArithFormula]] = None
     remarks: Optional[list["Remarks"]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.arith_formula_num)
+        yield from texts_opt_text(self.related_article_num)
+        yield from texts_opt_list_texts(self.arith_formulas)
+        yield from texts_opt_list_texts(self.remarks)
 
 
 class AppdxFig(WithAppdxFigTitle, WithRelatedArticleNum, tag="AppdxFig"):
@@ -3427,6 +3497,12 @@ class AppdxFig(WithAppdxFigTitle, WithRelatedArticleNum, tag="AppdxFig"):
     fig_structs: Optional[list[FigStruct]] = None
     table_structs: Optional[list[TableStruct]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.appdx_fig_title)
+        yield from texts_opt_text(self.related_article_num)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.table_structs)
+
 
 class AppdxFormat(WithAppdxFormatTitle, WithRelatedArticleNum, tag="AppdxFig"):
     """
@@ -3445,6 +3521,12 @@ class AppdxFormat(WithAppdxFormatTitle, WithRelatedArticleNum, tag="AppdxFig"):
 
     format_structs: Optional[list[FormatStruct]] = None
     remarks: Optional[list["Remarks"]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.appdx_format_title)
+        yield from texts_opt_text(self.related_article_num)
+        yield from texts_opt_list_texts(self.format_structs)
+        yield from texts_opt_list_texts(self.remarks)
 
 
 class LawBody(
@@ -3489,9 +3571,16 @@ class LawBody(
     def texts(self) -> Generator[str, None, None]:
         yield from texts_opt_text(self.law_title)
         yield from texts_opt_text(self.enact_statement)
+        # TODO toc
         yield from texts_opt_texts(self.preamble)
         yield from texts_texts(self.main_provision)
-        # TODO Other fields
+        yield from texts_opt_list_texts(self.suppl_provisions)
+        yield from texts_opt_list_texts(self.appdx_tables)
+        yield from texts_opt_list_texts(self.appdx_notes)
+        yield from texts_opt_list_texts(self.appdx_styles)
+        yield from texts_opt_list_texts(self.appdx)
+        yield from texts_opt_list_texts(self.appdx_figs)
+        yield from texts_opt_list_texts(self.appdx_formats)
 
 
 class Remarks(WithRemarksLabel, WithSentences, tag="Remarks"):
