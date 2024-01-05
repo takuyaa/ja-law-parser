@@ -1832,16 +1832,15 @@ class TableColumn(WithSentences, tag="TableColumn", search_mode="unordered"):
     paragraphs: Optional[list["Paragraph"]] = None
     items: Optional[list["Item"]] = None
     subitems1: Optional[list["Subitem1"]] = None
-    # TODO
-    # subitems2: Optional[list[Subitem2]] = None
-    # subitems3: Optional[list[Subitem3]] = None
-    # subitems4: Optional[list[Subitem4]] = None
-    # subitems5: Optional[list[Subitem5]] = None
-    # subitems6: Optional[list[Subitem6]] = None
-    # subitems7: Optional[list[Subitem7]] = None
-    # subitems8: Optional[list[Subitem8]] = None
-    # subitems9: Optional[list[Subitem9]] = None
-    # subitems10: Optional[list[Subitem10]] = None
+    subitems2: Optional[list["Subitem2"]] = None
+    subitems3: Optional[list["Subitem3"]] = None
+    subitems4: Optional[list["Subitem4"]] = None
+    subitems5: Optional[list["Subitem5"]] = None
+    subitems6: Optional[list["Subitem6"]] = None
+    subitems7: Optional[list["Subitem7"]] = None
+    subitems8: Optional[list["Subitem8"]] = None
+    subitems9: Optional[list["Subitem9"]] = None
+    subitems10: Optional[list["Subitem10"]] = None
     fig_structs: Optional[list["FigStruct"]] = None
     remarks: Optional["Remarks"] = None
     columns: Optional[list["Column"]] = None
