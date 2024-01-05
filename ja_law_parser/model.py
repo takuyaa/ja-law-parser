@@ -88,6 +88,9 @@ class ArithFormula(BaseXmlModel, tag="ArithFormula"):
         # At this moment, the contents don't have any text.
         return ""
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.figs)
+
 
 QuoteStructT = Union["Sentence", Fig, "TableStruct", Text]
 
@@ -3264,6 +3267,9 @@ class SupplProvisionAppdxTable(
 
     table_structs: Optional[list[TableStruct]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.table_structs)
+
 
 class SupplProvisionAppdxStyle(
     WithSupplProvisionAppdxStyleTitle, WithRelatedArticleNum, tag="SupplProvisionAppdxStyle"
@@ -3283,6 +3289,9 @@ class SupplProvisionAppdxStyle(
 
     style_structs: Optional[list[StyleStruct]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.style_structs)
+
 
 class SupplProvisionAppdx(WithArithFormulaNum, WithRelatedArticleNum, tag="SupplProvisionAppdx"):
     """
@@ -3299,6 +3308,9 @@ class SupplProvisionAppdx(WithArithFormulaNum, WithRelatedArticleNum, tag="Suppl
     num: Optional[str] = attr(name="Num", default=None)
 
     arith_formulas: Optional[list[ArithFormula]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_texts(self.arith_formulas)
 
 
 class SupplProvision(WithSupplProvisionLabel, tag="SupplProvision", search_mode="unordered"):
@@ -3335,9 +3347,9 @@ class SupplProvision(WithSupplProvisionLabel, tag="SupplProvision", search_mode=
         yield from texts_opt_list_texts(self.chapters)
         yield from texts_opt_list_texts(self.articles)
         yield from texts_opt_list_texts(self.paragraphs)
-        # yield from texts_opt_list_texts(self.suppl_provision_appdx_tables)
-        # yield from texts_opt_list_texts(self.suppl_provision_appdx_styles)
-        # yield from texts_opt_list_texts(self.suppl_provision_appdx)
+        yield from texts_opt_list_texts(self.suppl_provision_appdx_tables)
+        yield from texts_opt_list_texts(self.suppl_provision_appdx_styles)
+        yield from texts_opt_list_texts(self.suppl_provision_appdx)
 
 
 class AppdxTable(WithAppdxTableTitle, WithRelatedArticleNum, tag="AppdxTable", search_mode="unordered"):
