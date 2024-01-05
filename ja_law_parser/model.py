@@ -3330,6 +3330,15 @@ class SupplProvision(WithSupplProvisionLabel, tag="SupplProvision", search_mode=
     suppl_provision_appdx_styles: Optional[list[SupplProvisionAppdxStyle]] = None
     suppl_provision_appdx: Optional[list[SupplProvisionAppdx]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.suppl_provision_label)
+        yield from texts_opt_list_texts(self.chapters)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_texts(self.paragraphs)
+        # yield from texts_opt_list_texts(self.suppl_provision_appdx_tables)
+        # yield from texts_opt_list_texts(self.suppl_provision_appdx_styles)
+        # yield from texts_opt_list_texts(self.suppl_provision_appdx)
+
 
 class AppdxTable(WithAppdxTableTitle, WithRelatedArticleNum, tag="AppdxTable", search_mode="unordered"):
     """
@@ -3489,8 +3498,10 @@ class LawBody(
     def texts(self) -> Generator[str, None, None]:
         yield from texts_opt_text(self.law_title)
         yield from texts_opt_text(self.enact_statement)
+        # TODO toc
         yield from texts_opt_texts(self.preamble)
         yield from texts_texts(self.main_provision)
+        yield from texts_opt_list_texts(self.suppl_provisions)
         # TODO Other fields
 
 
