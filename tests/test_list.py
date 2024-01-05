@@ -70,13 +70,13 @@ class TestList:
           </Sublist1>
         </List>
         """
-        list: List = List.from_xml(xml)
-        assert len(list.list_sentence.sentences) == 1
-        assert list.list_sentence.sentences[0].text == "List sentence"
-        assert len(list.sublists1) == 3
+        list_: List = List.from_xml(xml)
+        assert len(list_.list_sentence.sentences) == 1
+        assert list_.list_sentence.sentences[0].text == "List sentence"
+        assert len(list_.sublists1) == 3
 
         # Sublist1[0]
-        sublist1_1: Sublist1 = list.sublists1[0]
+        sublist1_1: Sublist1 = list_.sublists1[0]
         assert len(sublist1_1.sublist1_sentence.columns) == 1
         assert len(sublist1_1.sublist1_sentence.columns[0].sentences) == 1
         assert sublist1_1.sublist1_sentence.columns[0].sentences[0].text == "Sublist1Sentence 1"
@@ -94,7 +94,7 @@ class TestList:
         assert sublist3_1.sublist3_sentence.sentences[0].text == "Sublist3Sentence 1"
 
         # Sublist1[1]
-        sublist1_2: Sublist1 = list.sublists1[1]
+        sublist1_2: Sublist1 = list_.sublists1[1]
         assert len(sublist1_2.sublist1_sentence.columns) == 1
         assert len(sublist1_2.sublist1_sentence.columns[0].sentences) == 1
         assert len(sublist1_2.sublists2) == 2
