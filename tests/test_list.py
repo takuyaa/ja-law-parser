@@ -74,6 +74,19 @@ class TestList:
         assert len(list_.list_sentence.sentences) == 1
         assert list_.list_sentence.sentences[0].text == "List sentence"
         assert len(list_.sublists1) == 3
+        assert list(list_.texts()) == [
+            "List sentence",
+            "Sublist1Sentence 1",
+            "Sublist2Sentence 1",
+            "Sublist3Sentence 1",
+            "Sublist1Sentence 2",
+            "Sublist2Sentence 2",
+            "Sublist3Sentence 2",
+            "Sublist2Sentence 3",
+            "Sublist3Sentence 3",
+            "Sublist3Sentence 4",
+            "Sublist1Sentence 3",
+        ]
 
         # Sublist1[0]
         sublist1_1: Sublist1 = list_.sublists1[0]
@@ -87,11 +100,13 @@ class TestList:
         assert len(sublist2_1.sublist2_sentence.sentences) == 1
         assert sublist2_1.sublist2_sentence.sentences[0].text == "Sublist2Sentence 1"
         assert len(sublist2_1.sublists3) == 1
+        assert list(sublist2_1.texts()) == ["Sublist2Sentence 1", "Sublist3Sentence 1"]
 
         # Sublist1[0].Sublist2[0].Sublist3
         sublist3_1: Sublist3 = sublist2_1.sublists3[0]
         assert len(sublist3_1.sublist3_sentence.sentences) == 1
         assert sublist3_1.sublist3_sentence.sentences[0].text == "Sublist3Sentence 1"
+        assert list(sublist3_1.texts()) == ["Sublist3Sentence 1"]
 
         # Sublist1[1]
         sublist1_2: Sublist1 = list_.sublists1[1]
@@ -102,8 +117,10 @@ class TestList:
         # Sublist1[1].Sublist2[0]
         sublist2_2: Sublist2 = sublist1_2.sublists2[0]
         assert len(sublist2_2.sublists3) == 1
+        assert list(sublist2_2.texts()) == ["Sublist2Sentence 2", "Sublist3Sentence 2"]
 
         # Sublist1[1].Sublist2[0].Sublist3[0]
         sublist3_2: Sublist3 = sublist2_2.sublists3[0]
         assert len(sublist3_2.sublist3_sentence.sentences) == 1
         assert sublist3_2.sublist3_sentence.sentences[0].text == "Sublist3Sentence 2"
+        assert list(sublist3_2.texts()) == ["Sublist3Sentence 2"]
