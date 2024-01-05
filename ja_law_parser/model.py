@@ -2168,6 +2168,11 @@ class Subitem2Sentence(WithSentences, tag="Subitem2Sentence", search_mode="unord
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
+
 
 class Subitem3Sentence(WithSentences, tag="Subitem3Sentence", search_mode="unordered"):
     """
@@ -2181,6 +2186,11 @@ class Subitem3Sentence(WithSentences, tag="Subitem3Sentence", search_mode="unord
 
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
 
 
 class Subitem4Sentence(WithSentences, tag="Subitem4Sentence", search_mode="unordered"):
@@ -2196,6 +2206,11 @@ class Subitem4Sentence(WithSentences, tag="Subitem4Sentence", search_mode="unord
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
+
 
 class Subitem5Sentence(WithSentences, tag="Subitem5Sentence", search_mode="unordered"):
     """
@@ -2209,6 +2224,11 @@ class Subitem5Sentence(WithSentences, tag="Subitem5Sentence", search_mode="unord
 
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
 
 
 class Subitem6Sentence(WithSentences, tag="Subitem6Sentence", search_mode="unordered"):
@@ -2224,6 +2244,11 @@ class Subitem6Sentence(WithSentences, tag="Subitem6Sentence", search_mode="unord
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
+
 
 class Subitem7Sentence(WithSentences, tag="Subitem7Sentence", search_mode="unordered"):
     """
@@ -2237,6 +2262,11 @@ class Subitem7Sentence(WithSentences, tag="Subitem7Sentence", search_mode="unord
 
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
 
 
 class Subitem8Sentence(WithSentences, tag="Subitem8Sentence", search_mode="unordered"):
@@ -2252,6 +2282,11 @@ class Subitem8Sentence(WithSentences, tag="Subitem8Sentence", search_mode="unord
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
+
 
 class Subitem9Sentence(WithSentences, tag="Subitem9Sentence", search_mode="unordered"):
     """
@@ -2266,6 +2301,11 @@ class Subitem9Sentence(WithSentences, tag="Subitem9Sentence", search_mode="unord
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
+
 
 class Subitem10Sentence(WithSentences, tag="Subitem10Sentence", search_mode="unordered"):
     """
@@ -2279,6 +2319,11 @@ class Subitem10Sentence(WithSentences, tag="Subitem10Sentence", search_mode="uno
 
     columns: Optional[list[Column]] = None
     table: Optional[Table] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.columns)
+        yield from texts_opt_texts(self.table)
 
 
 class Subitem10(WithSubitem10Title, tag="Subitem10", search_mode="unordered"):
@@ -2307,6 +2352,14 @@ class Subitem10(WithSubitem10Title, tag="Subitem10", search_mode="unordered"):
     fig_structs: Optional[list[FigStruct]] = None
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subitem10_title)
+        yield from texts_texts(self.subitem10_sentence)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
 
 
 class Subitem9(WithSubitem9Title, tag="Subitem9", search_mode="unordered"):
@@ -2338,6 +2391,15 @@ class Subitem9(WithSubitem9Title, tag="Subitem9", search_mode="unordered"):
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subitem9_title)
+        yield from texts_texts(self.subitem9_sentence)
+        yield from texts_opt_list_texts(self.subitems10)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
+
 
 class Subitem8(WithSubitem8Title, tag="Subitem8", search_mode="unordered"):
     """
@@ -2367,6 +2429,15 @@ class Subitem8(WithSubitem8Title, tag="Subitem8", search_mode="unordered"):
     fig_structs: Optional[list[FigStruct]] = None
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subitem8_title)
+        yield from texts_texts(self.subitem8_sentence)
+        yield from texts_opt_list_texts(self.subitems9)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
 
 
 class Subitem7(WithSubitem7Title, tag="Subitem7", search_mode="unordered"):
@@ -2398,6 +2469,15 @@ class Subitem7(WithSubitem7Title, tag="Subitem7", search_mode="unordered"):
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subitem7_title)
+        yield from texts_texts(self.subitem7_sentence)
+        yield from texts_opt_list_texts(self.subitems8)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
+
 
 class Subitem6(WithSubitem6Title, tag="Subitem6", search_mode="unordered"):
     """
@@ -2427,6 +2507,15 @@ class Subitem6(WithSubitem6Title, tag="Subitem6", search_mode="unordered"):
     fig_structs: Optional[list[FigStruct]] = None
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subitem6_title)
+        yield from texts_texts(self.subitem6_sentence)
+        yield from texts_opt_list_texts(self.subitems7)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
 
 
 class Subitem5(WithSubitem5Title, tag="Subitem5", search_mode="unordered"):
@@ -2458,6 +2547,15 @@ class Subitem5(WithSubitem5Title, tag="Subitem5", search_mode="unordered"):
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subitem5_title)
+        yield from texts_texts(self.subitem5_sentence)
+        yield from texts_opt_list_texts(self.subitems6)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
+
 
 class Subitem4(WithSubitem4Title, tag="Subitem4", search_mode="unordered"):
     """
@@ -2487,6 +2585,15 @@ class Subitem4(WithSubitem4Title, tag="Subitem4", search_mode="unordered"):
     fig_structs: Optional[list[FigStruct]] = None
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subitem4_title)
+        yield from texts_texts(self.subitem4_sentence)
+        yield from texts_opt_list_texts(self.subitems5)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
 
 
 class Subitem3(WithSubitem3Title, tag="Subitem3", search_mode="unordered"):
@@ -2518,6 +2625,15 @@ class Subitem3(WithSubitem3Title, tag="Subitem3", search_mode="unordered"):
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subitem3_title)
+        yield from texts_texts(self.subitem3_sentence)
+        yield from texts_opt_list_texts(self.subitems4)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
+
 
 class Subitem2(WithSubitem2Title, tag="Subitem2", search_mode="unordered"):
     """
@@ -2547,6 +2663,15 @@ class Subitem2(WithSubitem2Title, tag="Subitem2", search_mode="unordered"):
     fig_structs: Optional[list[FigStruct]] = None
     style_structs: Optional[list[StyleStruct]] = None
     lists: Optional[list[List]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subitem2_title)
+        yield from texts_texts(self.subitem2_sentence)
+        yield from texts_opt_list_texts(self.subitems3)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.lists)
 
 
 class Subitem1(WithSubitem1Title, tag="Subitem1", search_mode="unordered"):
@@ -2581,7 +2706,7 @@ class Subitem1(WithSubitem1Title, tag="Subitem1", search_mode="unordered"):
     def texts(self) -> Generator[str, None, None]:
         yield from texts_opt_text(self.subitem1_title)
         yield from texts_texts(self.subitem1_sentence)
-        # TODO yield from texts_opt_list_texts(self.subitems2)
+        yield from texts_opt_list_texts(self.subitems2)
         yield from texts_opt_list_texts(self.table_structs)
         yield from texts_opt_list_texts(self.fig_structs)
         yield from texts_opt_list_texts(self.style_structs)
