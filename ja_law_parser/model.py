@@ -665,7 +665,7 @@ class WithArticleTitle(BaseXmlModel, arbitrary_types_allowed=True):
     def article_title(self) -> ArticleTitle:
         return ArticleTitle(raw_element=self.article_title_raw)
 
-    article_title_raw: etree._Element = element(tag="ArticleTitle", default=None, exclude=True)
+    article_title_raw: Optional[etree._Element] = element(tag="ArticleTitle", default=None, exclude=True)
 
 
 class ArticleCaption(TaggedText, tag="ArticleCaption"):
@@ -726,7 +726,7 @@ class WithDivisionTitle(BaseXmlModel, arbitrary_types_allowed=True):
             return None
         return DivisionTitle(raw_element=self.division_title_raw)
 
-    division_title_raw: etree._Element = element(tag="DivisionTitle", default=None, exclude=True)
+    division_title_raw: Optional[etree._Element] = element(tag="DivisionTitle", default=None, exclude=True)
 
 
 class SectionTitle(TaggedText, tag="SectionTitle"):
@@ -753,7 +753,7 @@ class WithSectionTitle(BaseXmlModel, arbitrary_types_allowed=True):
             return None
         return SectionTitle(raw_element=self.section_title_raw)
 
-    section_title_raw: etree._Element = element(tag="SectionTitle", default=None, exclude=True)
+    section_title_raw: Optional[etree._Element] = element(tag="SectionTitle", default=None, exclude=True)
 
 
 class SubsectionTitle(TaggedText, tag="SubsectionTitle"):
@@ -780,7 +780,7 @@ class WithSubsectionTitle(BaseXmlModel, arbitrary_types_allowed=True):
             return None
         return SubsectionTitle(raw_element=self.subsection_title_raw)
 
-    subsection_title_raw: etree._Element = element(tag="SubsectionTitle", default=None, exclude=True)
+    subsection_title_raw: Optional[etree._Element] = element(tag="SubsectionTitle", default=None, exclude=True)
 
 
 class ChapterTitle(TaggedText, tag="ChapterTitle"):
@@ -807,7 +807,7 @@ class WithChapterTitle(BaseXmlModel, arbitrary_types_allowed=True):
             return None
         return ChapterTitle(raw_element=self.chapter_title_raw)
 
-    chapter_title_raw: etree._Element = element(tag="ChapterTitle", default=None, exclude=True)
+    chapter_title_raw: Optional[etree._Element] = element(tag="ChapterTitle", default=None, exclude=True)
 
 
 class PartTitle(TaggedText, tag="PartTitle"):
@@ -834,7 +834,7 @@ class WithPartTitle(BaseXmlModel, arbitrary_types_allowed=True):
             return None
         return PartTitle(raw_element=self.part_title_raw)
 
-    part_title_raw: etree._Element = element(tag="PartTitle", default=None, exclude=True)
+    part_title_raw: Optional[etree._Element] = element(tag="PartTitle", default=None, exclude=True)
 
 
 class RemarksLabel(TaggedText, tag="RemarksLabel"):
@@ -865,7 +865,7 @@ class WithRemarksLabel(BaseXmlModel, arbitrary_types_allowed=True):
             return None
         return RemarksLabel(raw_element=self.remarks_label_raw)
 
-    remarks_label_raw: etree._Element = element(tag="RemarksLabel", default=None, exclude=True)
+    remarks_label_raw: Optional[etree._Element] = element(tag="RemarksLabel", default=None, exclude=True)
 
 
 class LawTitle(TaggedText, tag="LawTitle"):
