@@ -6,6 +6,7 @@ class TestTOC:
         xml = """\
         <TOC>
           <TOCLabel>目次</TOCLabel>
+          <TOCPreambleLabel>前文</TOCPreambleLabel>
           <TOCChapter Num="1">
             <ChapterTitle>Chapter 1</ChapterTitle>
             <ArticleRange>（第一条・第二条）</ArticleRange>
@@ -22,6 +23,7 @@ class TestTOC:
         toc: TOC = TOC.from_xml(xml)
         assert toc is not None
         assert toc.toc_label == "目次"
+        assert toc.toc_preamble_label == "前文"
         assert len(toc.toc_chapters) == 2
         assert toc.toc_chapters[0].num == "1"
         assert toc.toc_chapters[0].chapter_title.text == "Chapter 1"
