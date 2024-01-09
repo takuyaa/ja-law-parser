@@ -1005,9 +1005,9 @@ class WithArticleRange(BaseXmlModel, arbitrary_types_allowed=True):
 
     @computed_element(tag="ArticleRange")  # type: ignore[arg-type]
     def article_range(self) -> Optional[ArticleRange]:
-        if self.article_range is None:
+        if self.article_range_raw is None:
             return None
-        return ArticleRange(raw_element=self.article_range)
+        return ArticleRange(raw_element=self.article_range_raw)
 
     article_range_raw: Optional[etree._Element] = element(tag="ArticleRange", default=None, exclude=True)
 
