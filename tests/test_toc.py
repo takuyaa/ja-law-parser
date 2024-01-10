@@ -32,3 +32,12 @@ class TestTOC:
         assert toc.toc_chapters[1].chapter_title.text == "Chapter 2"
         assert toc.toc_chapters[1].article_range.text == "（第三条―第五条）"
         assert toc.toc_suppl_provision.suppl_provision_label.text == "附則"
+        assert list(toc.texts()) == [
+            "目次",
+            "前文",
+            "Chapter 1",
+            "（第一条・第二条）",
+            "Chapter 2",
+            "（第三条―第五条）",
+            "附則",
+        ]

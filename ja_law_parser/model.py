@@ -3230,6 +3230,12 @@ class TOCSupplProvision(WithSupplProvisionLabel, WithArticleRange, tag="TOCSuppl
     toc_articles: Optional[list[TOCArticle]] = None
     toc_chapters: Optional[list[TOCChapter]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.suppl_provision_label)
+        yield from texts_opt_text(self.article_range)
+        yield from texts_opt_list_texts(self.toc_articles)
+        yield from texts_opt_list_texts(self.toc_chapters)
+
 
 class TOC(WithTOCAppdxTableLabels, tag="TOC", search_mode="unordered"):
     """
@@ -3261,7 +3267,7 @@ class TOC(WithTOCAppdxTableLabels, tag="TOC", search_mode="unordered"):
         yield from texts_opt_list_texts(self.toc_chapters)
         yield from texts_opt_list_texts(self.toc_sections)
         yield from texts_opt_list_texts(self.toc_articles)
-        # TODO
+        yield from texts_opt_texts(self.toc_suppl_provision)
 
 
 class Preamble(BaseXmlModel, tag="Preamble"):
