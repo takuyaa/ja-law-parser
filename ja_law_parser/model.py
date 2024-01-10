@@ -3165,6 +3165,10 @@ class TOCArticle(WithArticleTitle, WithArticleCaption, tag="TOCArticle"):
     num: str = attr(name="Num")
     delete: Optional[bool] = attr(name="Delete", default=None)
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.article_title)
+        yield from texts_opt_text(self.article_caption)
+
 
 class TOCChapter(WithChapterTitle, WithArticleRange, tag="TOCChapter", search_mode="unordered"):
     """
@@ -3254,6 +3258,7 @@ class TOC(WithTOCAppdxTableLabels, tag="TOC", search_mode="unordered"):
         yield from texts_opt_str(self.toc_label)
         yield from texts_opt_str(self.toc_preamble_label)
         yield from texts_opt_list_texts(self.toc_parts)
+        yield from texts_opt_list_texts(self.toc_chapters)
         # TODO
 
 
