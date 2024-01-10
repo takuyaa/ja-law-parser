@@ -3094,6 +3094,10 @@ class TOCDivision(WithDivisionTitle, WithArticleRange, tag="TOCDivision"):
         article_range: 条範囲
     """
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.division_title)
+        yield from texts_opt_text(self.article_range)
+
 
 class TOCSubsection(WithSubsectionTitle, WithArticleRange, tag="TOCSubsection", search_mode="unordered"):
     """
@@ -3112,6 +3116,11 @@ class TOCSubsection(WithSubsectionTitle, WithArticleRange, tag="TOCSubsection", 
     delete: Optional[bool] = attr(name="Delete", default=None)
 
     toc_divisions: Optional[list[TOCDivision]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.subsection_title)
+        yield from texts_opt_text(self.article_range)
+        yield from texts_opt_list_texts(self.toc_divisions)
 
 
 class TOCSection(WithSectionTitle, WithArticleRange, tag="TOCSection", search_mode="unordered"):
@@ -3133,6 +3142,12 @@ class TOCSection(WithSectionTitle, WithArticleRange, tag="TOCSection", search_mo
 
     toc_subsections: Optional[list[TOCSubsection]] = None
     toc_divisions: Optional[list[TOCDivision]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.section_title)
+        yield from texts_opt_text(self.article_range)
+        yield from texts_opt_list_texts(self.toc_subsections)
+        yield from texts_opt_list_texts(self.toc_divisions)
 
 
 class TOCArticle(WithArticleTitle, WithArticleCaption, tag="TOCArticle"):
@@ -3169,6 +3184,11 @@ class TOCChapter(WithChapterTitle, WithArticleRange, tag="TOCChapter", search_mo
 
     toc_sections: Optional[list[TOCSection]] = None
 
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.chapter_title)
+        yield from texts_opt_text(self.article_range)
+        yield from texts_opt_list_texts(self.toc_sections)
+
 
 class TOCPart(WithPartTitle, tag="TOCPart", search_mode="unordered"):
     """
@@ -3186,6 +3206,10 @@ class TOCPart(WithPartTitle, tag="TOCPart", search_mode="unordered"):
     delete: Optional[bool] = attr(name="Delete", default=None)
 
     toc_chapters: Optional[list[TOCChapter]] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_text(self.part_title)
+        yield from texts_opt_list_texts(self.toc_chapters)
 
 
 class TOCSupplProvision(WithSupplProvisionLabel, WithArticleRange, tag="TOCSupplProvision", search_mode="unordered"):
@@ -3225,6 +3249,12 @@ class TOC(WithTOCAppdxTableLabels, tag="TOC", search_mode="unordered"):
     toc_sections: Optional[list[TOCSection]] = None
     toc_articles: Optional[list[TOCArticle]] = None
     toc_suppl_provision: Optional[TOCSupplProvision] = None
+
+    def texts(self) -> Generator[str, None, None]:
+        yield from texts_opt_str(self.toc_label)
+        yield from texts_opt_str(self.toc_preamble_label)
+        yield from texts_opt_list_texts(self.toc_parts)
+        # TODO
 
 
 class Preamble(BaseXmlModel, tag="Preamble"):
@@ -3786,6 +3816,11 @@ def texts_list_texts(obj: Sequence[TextsP]) -> Generator[str, None, None]:
     for elem in obj:
         for text in elem.texts():
             yield text
+
+
+def texts_opt_str(obj: Optional[str]) -> Generator[str, None, None]:
+    if obj is not None:
+        yield obj
 
 
 def texts_opt_text(obj: Optional[TextP]) -> Generator[str, None, None]:
