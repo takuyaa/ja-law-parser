@@ -3614,7 +3614,7 @@ class LawBody(
     def texts(self) -> Generator[str, None, None]:
         yield from texts_opt_text(self.law_title)
         yield from texts_opt_text(self.enact_statement)
-        # TODO toc
+        yield from texts_opt_texts(self.toc)
         yield from texts_opt_texts(self.preamble)
         yield from texts_texts(self.main_provision)
         yield from texts_opt_list_texts(self.suppl_provisions)
