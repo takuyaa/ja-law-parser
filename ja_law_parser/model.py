@@ -3259,6 +3259,8 @@ class TOC(WithTOCAppdxTableLabels, tag="TOC", search_mode="unordered"):
         yield from texts_opt_str(self.toc_preamble_label)
         yield from texts_opt_list_texts(self.toc_parts)
         yield from texts_opt_list_texts(self.toc_chapters)
+        yield from texts_opt_list_texts(self.toc_sections)
+        yield from texts_opt_list_texts(self.toc_articles)
         # TODO
 
 
