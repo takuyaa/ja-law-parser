@@ -1,6 +1,8 @@
+PYTEST_OPTS := tests
+
 .PHONY: test
 test:
-	@poetry run pytest tests
+	@poetry run pytest $(PYTEST_OPTS)
 
 .PHONY: lint
 lint:
