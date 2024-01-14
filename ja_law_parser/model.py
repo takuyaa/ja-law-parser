@@ -3660,6 +3660,7 @@ class NewProvision(
     新規定
 
     Attributes:
+        law_title: 題名
         preamble: 前文
         toc: 目次
         parts: 編
