@@ -59,7 +59,12 @@ class TestParagraph:
 
         assert new_provisions[0].law_title is not None
         assert new_provisions[0].law_title.text == "タイトル"
+        assert list(new_provisions[0].texts()) == ["タイトル"]
 
         assert new_provisions[1].preamble is not None
         assert len(new_provisions[1].preamble.paragraphs) == 1
         assert type(new_provisions[1].preamble.paragraphs[0].paragraph_sentence) == ParagraphSentence
+        assert list(new_provisions[1].texts()) == ["テストの項文"]
+
+        assert len(new_provisions[2].articles) == 1
+        assert list(new_provisions[2].texts()) == ["テストの条見出し", "テストの条文タイトル", "テストの段"]

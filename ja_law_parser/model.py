@@ -3660,6 +3660,7 @@ class NewProvision(
     新規定
 
     Attributes:
+        law_title: 題名
         preamble: 前文
         toc: 目次
         parts: 編
@@ -3692,7 +3693,7 @@ class NewProvision(
         appdx_tables: 別表
         appdx_notes: 別記
         appdx_styles: 別記様式
-        appdxs: 付録
+        appdx: 付録
         appdx_figs: 別図
         appdx_formats: 別記書式
         suppl_provision_appdx_styles: 附則様式
@@ -3714,7 +3715,7 @@ class NewProvision(
     parts: Optional[list[Part]] = None
     chapters: Optional[list[Chapter]] = None
     sections: Optional[list[Section]] = None
-    sub_sections: Optional[list[Subsection]] = None
+    subsections: Optional[list[Subsection]] = None
     divisions: Optional[list[Division]] = None
     articles: Optional[list[Article]] = None
     paragraphs: Optional[list[Paragraph]] = None
@@ -3752,7 +3753,53 @@ class NewProvision(
 
     def texts(self) -> Generator[str, None, None]:
         yield from texts_opt_text(self.law_title)
-        # TODO Other fields
+        yield from texts_opt_texts(self.preamble)
+        yield from texts_opt_texts(self.toc)
+        yield from texts_opt_list_texts(self.parts)
+        yield from texts_opt_text(self.part_title)
+        yield from texts_opt_list_texts(self.chapters)
+        yield from texts_opt_text(self.chapter_title)
+        yield from texts_opt_list_texts(self.sections)
+        yield from texts_opt_text(self.section_title)
+        yield from texts_opt_list_texts(self.subsections)
+        yield from texts_opt_text(self.subsection_title)
+        yield from texts_opt_list_texts(self.divisions)
+        yield from texts_opt_text(self.division_title)
+        yield from texts_opt_list_texts(self.articles)
+        yield from texts_opt_list_text(self.suppl_notes)
+        yield from texts_opt_list_texts(self.paragraphs)
+        yield from texts_opt_list_texts(self.items)
+        yield from texts_opt_list_texts(self.subitems1)
+        yield from texts_opt_list_texts(self.subitems2)
+        yield from texts_opt_list_texts(self.subitems3)
+        yield from texts_opt_list_texts(self.subitems4)
+        yield from texts_opt_list_texts(self.subitems5)
+        yield from texts_opt_list_texts(self.subitems6)
+        yield from texts_opt_list_texts(self.subitems7)
+        yield from texts_opt_list_texts(self.subitems8)
+        yield from texts_opt_list_texts(self.subitems9)
+        yield from texts_opt_list_texts(self.subitems10)
+        yield from texts_opt_list_texts(self.lists)
+        yield from texts_opt_list_text(self.sentences)
+        yield from texts_opt_list_texts(self.amend_provisions)
+        yield from texts_opt_list_texts(self.appdx_tables)
+        yield from texts_opt_list_texts(self.appdx_notes)
+        yield from texts_opt_list_texts(self.appdx_styles)
+        yield from texts_opt_list_texts(self.appdx)
+        yield from texts_opt_list_texts(self.appdx_figs)
+        yield from texts_opt_list_texts(self.appdx_formats)
+        yield from texts_opt_list_texts(self.suppl_provision_appdx_styles)
+        yield from texts_opt_list_texts(self.suppl_provision_appdx_tables)
+        yield from texts_opt_list_texts(self.suppl_provision_appdxs)
+        yield from texts_opt_list_texts(self.table_structs)
+        yield from texts_opt_list_texts(self.table_rows)
+        yield from texts_opt_list_texts(self.table_columns)
+        yield from texts_opt_list_texts(self.fig_structs)
+        yield from texts_opt_list_texts(self.note_structs)
+        yield from texts_opt_list_texts(self.style_structs)
+        yield from texts_opt_list_texts(self.format_structs)
+        yield from texts_opt_list_texts(self.remarks)
+        yield from texts_opt_texts(self.law_body)
 
 
 class Law(BaseXmlModel, tag="Law"):
