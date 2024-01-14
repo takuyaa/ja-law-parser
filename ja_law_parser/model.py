@@ -1878,7 +1878,7 @@ class TableColumn(WithSentences, tag="TableColumn", search_mode="unordered"):
         yield from texts_opt_list_texts(self.subitems9)
         yield from texts_opt_list_texts(self.subitems10)
         yield from texts_opt_list_texts(self.fig_structs)
-        # yield from texts_opt_list_texts(self.remarks)
+        yield from texts_opt_texts(self.remarks)
         yield from texts_opt_list_text(self.sentences)
         yield from texts_opt_list_texts(self.columns)
 
