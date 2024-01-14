@@ -3715,7 +3715,7 @@ class NewProvision(
     parts: Optional[list[Part]] = None
     chapters: Optional[list[Chapter]] = None
     sections: Optional[list[Section]] = None
-    sub_sections: Optional[list[Subsection]] = None
+    subsections: Optional[list[Subsection]] = None
     divisions: Optional[list[Division]] = None
     articles: Optional[list[Article]] = None
     paragraphs: Optional[list[Paragraph]] = None
@@ -3761,7 +3761,7 @@ class NewProvision(
         yield from texts_opt_text(self.chapter_title)
         yield from texts_opt_list_texts(self.sections)
         yield from texts_opt_text(self.section_title)
-        yield from texts_opt_list_texts(self.sub_sections)
+        yield from texts_opt_list_texts(self.subsections)
         yield from texts_opt_text(self.subsection_title)
         yield from texts_opt_list_texts(self.divisions)
         yield from texts_opt_text(self.division_title)
