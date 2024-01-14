@@ -3693,7 +3693,7 @@ class NewProvision(
         appdx_tables: 別表
         appdx_notes: 別記
         appdx_styles: 別記様式
-        appdxs: 付録
+        appdx: 付録
         appdx_figs: 別図
         appdx_formats: 別記書式
         suppl_provision_appdx_styles: 附則様式
