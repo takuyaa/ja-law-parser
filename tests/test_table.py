@@ -38,6 +38,14 @@ class TestSentence:
         table_column: TableColumn = table_row.table_columns[0]
         assert len(table_column.subitems1) == 1
         assert table_column.valign == "top"
+        assert list(table_column.texts()) == [
+            "イ",
+            "Subitem1 sentence",
+            "（１）",
+            "Subitem2 sentence 1",
+            "（２）",
+            "Subitem2 sentence 2",
+        ]
 
         subitem1: Subitem1 = table_column.subitems1[0]
         assert subitem1.num == "1"
