@@ -10,6 +10,15 @@ from ja_law_parser.model import (
     Text,
     WithArticleTitle,
     WithSentences,
+    Item,
+    Paragraph,
+    List,
+    FigStruct,
+    Table,
+    TableStruct,
+    AppdxTable,
+    ArithFormula,
+    TOCSection,
 )
 
 
@@ -118,3 +127,271 @@ class TestQuoteStruct:
         assert type(quote_struct) == QuoteStruct
         assert len(quote_struct.contents) == 1
         assert type(quote_struct.contents[0]) == Fig
+    
+    def test_sentence_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <Sentence></Sentence>
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == Sentence
+        assert type(quote_struct.contents[2]) == Text
+
+    def test_item_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <Item Num="1">
+                <ItemTitle>Item title</ItemTitle>
+                <ItemSentence>
+                  <Sentence Num="1">Item sentence</Sentence>
+                </ItemSentence>
+              </Item>
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == Item
+        assert type(quote_struct.contents[2]) == Text
+
+    def test_paragraph_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <Paragraph Num="1">
+                <ParagraphNum />
+                <ParagraphSentence>
+                  <Sentence>Paragraph Sentence</Sentence>
+                </ParagraphSentence>
+              </Paragraph>
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == Paragraph
+        assert type(quote_struct.contents[2]) == Text
+
+    def test_list_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <List>
+                <ListSentence>
+                  <Sentence>List sentence</Sentence>
+                </ListSentence>
+              </List>
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == List
+        assert type(quote_struct.contents[2]) == Text
+
+    def test_fig_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <Fig src="url" />
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == Fig
+        assert type(quote_struct.contents[2]) == Text
+
+    def test_fig_struct_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <FigStruct>
+                <Fig src="url" />
+              </FigStruct>
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == FigStruct
+        assert type(quote_struct.contents[2]) == Text
+
+    def test_table_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <Table>
+                <TableRow>
+                  <TableColumn></TableColumn>
+                </TableRow>
+              </Table>
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == Table
+        assert type(quote_struct.contents[2]) == Text
+
+    def test_table_struct_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <TableStruct>
+                <Table>
+                  <TableRow>
+                    <TableColumn></TableColumn>
+                  </TableRow>
+                </Table>
+              </TableStruct>
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == TableStruct
+        assert type(quote_struct.contents[2]) == Text
+
+    def test_appdx_table_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <AppdxTable></AppdxTable>
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == AppdxTable
+        assert type(quote_struct.contents[2]) == Text
+
+    def test_arith_formula_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <ArithFormula></ArithFormula>
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == ArithFormula
+        assert type(quote_struct.contents[2]) == Text
+
+    def test_toc_section_in_quote_struct_contents(self) -> None:
+        xml = """\
+        <SentenceContainer>
+          <Sentence>
+            AAA
+            <QuoteStruct>
+              AAA
+              <TOCSection Num="1"></TOCSection>
+              BBB
+            </QuoteStruct>
+            BBB
+          </Sentence>
+        </SentenceContainer>
+        """  # noqa: E501
+        sc: SentenceContainer = SentenceContainer.from_xml(xml)
+        quote_struct: QuoteStruct = sc.sentences[0].contents[1]
+        assert type(quote_struct) == QuoteStruct
+        assert len(quote_struct.contents) == 3
+        assert type(quote_struct.contents[0]) == Text
+        assert type(quote_struct.contents[1]) == TOCSection
+        assert type(quote_struct.contents[2]) == Text
